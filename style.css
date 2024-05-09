@@ -8,7 +8,7 @@ body {
 
 #loadingProgress {
     position: fixed;
-    top: 0;
+    top: 60px;
     left: 0;
     margin: 20px;
     background-color: rgba(255, 255, 255, 0.5);
@@ -18,10 +18,22 @@ body {
     font-size: 14px;
 }
 
-button {
+#ArButton {
     position: absolute;
     top: 80%;
     left: 40%;
     width: 20%;
     height: 2rem;
+}
+
+#diminish {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    margin: 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 100;
 }

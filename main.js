@@ -21,6 +21,7 @@ if (window.location.hostname === "localhost") {
 
 // general variables
 let canvas;
+let diminish_button;
 
 // AR variables
 let xrRefSpace;
@@ -79,6 +80,7 @@ function init() {
     canvas = document.createElement('div');
     document.body.appendChild( canvas );
     canvas.appendChild( three_renderer.domElement );
+    diminish_button = document.getElementById("diminish")
 
     scale = 1;
     movement_scale = 2;
@@ -109,6 +111,12 @@ function updateLoadingProgress(progress) {
     }
 }
 
+function DiminishView() {
+    splat_object.splats.forEach(async singleSplat => {
+        singleSplat.Render(false);
+    })
+    splat_object.updateRenderingOfSplats();
+}
 
 /*
  * =================================================================================================
@@ -197,44 +205,6 @@ function onXRFrame(t, frame) {
     session.requestAnimationFrame(onXRFrame);
     const referenceSpace = three_renderer.xr.getReferenceSpace();
 
-    // if ( hitTestSourceRequested === false ) {
-    //
-    //     session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
-    //
-    //         session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
-    //
-    //             hitTestSource = source;
-    //         } );
-    //     } );
-    //
-    //     session.addEventListener( 'end', function () {
-    //
-    //         hitTestSourceRequested = false;
-    //         hitTestSource = null;
-    //
-    //     } );
-    //
-    //     hitTestSourceRequested = true;
-    // }
-
-    // if ( hitTestSource && searchforhit ) {
-    //
-    //     const hitTestResults = frame.getHitTestResults( hitTestSource );
-    //
-    //     if ( hitTestResults.length ) {
-    //
-    //         const hit = hitTestResults[ 0 ];
-    //
-    //         reticle.visible = true;
-    //         reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
-    //
-    //     } else {
-    //
-    //         reticle.visible = false;
-    //
-    //     }
-    // }
-
     const baseLayer = session.renderState.baseLayer;
     const pose = frame.getViewerPose(xrRefSpace);
 
@@ -242,13 +212,6 @@ function onXRFrame(t, frame) {
     splat_camera._position.x = scale*movement_scale*three_camera.position.x;
     splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
     splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
-
-    // let x_position = scale*movement_scale*tcamera.position.x;
-    // let y_position = -scale*movement_scale*tcamera.position.y;
-    // let z_position = scale*movement_scale*tcamera.position.z-initial_z;
-    //
-    // let translation = new SPLAT.Vector3(x_position, y_position, z_position);
-    // camera.position = camera.position.add(translation);
 
     splat_camera._rotation.x = three_camera.quaternion.x;
     splat_camera._rotation.y = -three_camera.quaternion.y;
@@ -283,3 +246,4 @@ main();
 
 window.addEventListener("resize", onWindowResize)
 ARButton.addEventListener( 'click',x=> AR() )
+diminish_button.addEventListener( 'click', x => DiminishView() )
