@@ -136,6 +136,11 @@ function DiminishView() {
 
 function AR()
 {
+    // when entering AR show no splats at the beginning
+    splat_object.splats.forEach(async singleSplat => {
+        singleSplat.Render(false);
+    })
+    
     var currentSession = null;
 
     if( currentSession == null )
