@@ -140,6 +140,7 @@ function AR()
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.Render(false);
     })
+    splat_object.updateRenderingOfSplats();
     
     var currentSession = null;
 
