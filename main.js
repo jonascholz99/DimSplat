@@ -70,8 +70,8 @@ function init() {
     splat_camera = new SPLAT.Camera();
     splat_camera.data.fx =  2232 / 4;
     splat_camera.data.fy =  2232 / 4;
-    splat_camera.data.near =  0.03;
-    splat_camera.data.far =  100;
+    splat_camera.data.near =  0.01;
+    splat_camera.data.far =  50;
     splat_camera._position = new SPLAT.Vector3(0, -1.8, 0);
 
 
@@ -83,7 +83,7 @@ function init() {
     scale = 1;
     movement_scale = 2;
     initial_z = 0;
-    initial_y = -1.8; //-15
+    initial_y = 1.8*2; //-15
 }
 
 /*
