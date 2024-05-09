@@ -21,8 +21,15 @@ if (window.location.hostname === "localhost") {
 
 // general variables
 let canvas;
+
+// AR variables
 let xrRefSpace;
 let ARButton;
+
+let scale;
+let movement_scale;
+let initial_z;
+let initial_y;
 
 // three-js variables
 let three_renderer;
@@ -72,6 +79,11 @@ function init() {
     canvas = document.createElement('div');
     document.body.appendChild( canvas );
     canvas.appendChild( three_renderer.domElement );
+
+    scale = 1;
+    movement_scale = 2;
+    initial_z = 0;
+    initial_y = -2; //-15
 }
 
 /*
