@@ -240,7 +240,7 @@ function onXRFrame(t, frame) {
 
     three_renderer.render( three_scene, three_camera );
     splat_camera._position.x = scale*movement_scale*three_camera.position.x;
-    splat_camera._position.y = -scale*movement_scale*three_camera.position.y;
+    splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
     splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
 
     // let x_position = scale*movement_scale*tcamera.position.x;
