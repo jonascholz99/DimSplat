@@ -12,6 +12,7 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
-    "@jonascholz/gaussian-splatting": "^1.0.7"
+    "@jonascholz/gaussian-splatting": "^1.0.7",
+    "three": "^0.164.1"
   }
 }
