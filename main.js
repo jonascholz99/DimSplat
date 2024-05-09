@@ -21,6 +21,8 @@ if (window.location.hostname === "localhost") {
 
 // general variables
 let canvas;
+let xrRefSpace;
+let ARButton;
 
 // three-js variables
 let three_renderer;
@@ -59,9 +61,14 @@ function init() {
     
     splat_scene = new SPLAT.Scene();
     splat_camera = new SPLAT.Camera();
+    splat_camera.data.fx =  2232 / 4;
+    splat_camera.data.fy =  2232 / 4;
+    splat_camera.data.near =  0.03;
+    splat_camera.data.far =  100;
     splat_camera._position = new SPLAT.Vector3(0, -1.8, 0);
 
 
+    ARButton = document.getElementById("ArButton");
     canvas = document.createElement('div');
     document.body.appendChild( canvas );
     canvas.appendChild( three_renderer.domElement );
@@ -78,7 +85,7 @@ function onWindowResize() {
     splat_renderer.setSize(window.innerWidth, window.innerHeight);
     splat_renderer.setSize(window.innerWidth, window.innerHeight);
 }
-window.addEventListener("resize", onWindowResize)
+
 
 function updateLoadingProgress(progress) {
     var loadingProgressElement = document.getElementById('loadingProgress');
@@ -90,7 +97,153 @@ function updateLoadingProgress(progress) {
     }
 }
 
-document.getElementById("ArButton").addEventListener( 'click',x=> console.log("Enter AR")) //AR() )
+
+/*
+ * =================================================================================================
+ *  Section: AR
+ * =================================================================================================
+ *      
+ */
+
+function AR()
+{
+    var currentSession = null;
+
+    if( currentSession == null )
+    {
+        let options = {
+            requiredFeatures: ['dom-overlay', 'hit-test'],
+            domOverlay: { root: document.body },
+        };
+        var sessionInit = getXRSessionInit( 'immersive-ar', {
+            mode: 'immersive-ar',
+            referenceSpaceType: 'local', // 'local', 'local-floor'
+            sessionInit: options
+        });
+
+        navigator.xr.requestSession( 'immersive-ar', sessionInit ).then( onSessionStarted );
+    } else {
+        currentSession.end();
+    }
+
+    three_renderer.xr.addEventListener('sessionstart', function(ev) {
+        console.log('sessionstart', ev);
+    });
+    three_renderer.xr.addEventListener('sessionend', function(ev) {
+        console.log('sessionend', ev);
+    });
+
+    function onSessionStarted( session ) {
+        session.addEventListener( 'end', onSessionEnded );
+        three_renderer.xr.setSession( session );
+        ARButton.style.display = 'none';
+        ARButton.textContent = 'EXIT AR';
+        currentSession = session;
+        session.requestReferenceSpace('local').then((refSpace) => {
+            xrRefSpace = refSpace;
+            session.requestAnimationFrame(onXRFrame);
+        });
+    }
+    function onSessionEnded( /*event*/ ) {
+        currentSession.removeEventListener( 'end', onSessionEnded );
+        three_renderer.xr.setSession( null );
+        ARButton.textContent = 'ENTER AR' ;
+        currentSession = null;
+    }
+}
+
+function getXRSessionInit(mode, options) {
+    if ( options && options.referenceSpaceType ) {
+        three_renderer.xr.setReferenceSpaceType( options.referenceSpaceType );
+    }
+    var space = (options || {}).referenceSpaceType || 'local-floor';
+    var sessionInit = (options && options.sessionInit) || {};
+
+    // Nothing to do for default features.
+    if ( space == 'viewer' )
+        return sessionInit;
+    if ( space == 'local' && mode.startsWith('immersive' ) )
+        return sessionInit;
+
+    // If the user already specified the space as an optional or required feature, don't do anything.
+    if ( sessionInit.optionalFeatures && sessionInit.optionalFeatures.includes(space) )
+        return sessionInit;
+    if ( sessionInit.requiredFeatures && sessionInit.requiredFeatures.includes(space) )
+        return sessionInit;
+
+    var newInit = Object.assign( {}, sessionInit );
+    newInit.requiredFeatures = [ space ];
+    if ( sessionInit.requiredFeatures ) {
+        newInit.requiredFeatures = newInit.requiredFeatures.concat( sessionInit.requiredFeatures );
+    }
+    return newInit;
+}
+
+function onXRFrame(t, frame) {
+
+    const session = frame.session;
+    session.requestAnimationFrame(onXRFrame);
+    const referenceSpace = three_renderer.xr.getReferenceSpace();
+
+    // if ( hitTestSourceRequested === false ) {
+    //
+    //     session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
+    //
+    //         session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
+    //
+    //             hitTestSource = source;
+    //         } );
+    //     } );
+    //
+    //     session.addEventListener( 'end', function () {
+    //
+    //         hitTestSourceRequested = false;
+    //         hitTestSource = null;
+    //
+    //     } );
+    //
+    //     hitTestSourceRequested = true;
+    // }
+
+    // if ( hitTestSource && searchforhit ) {
+    //
+    //     const hitTestResults = frame.getHitTestResults( hitTestSource );
+    //
+    //     if ( hitTestResults.length ) {
+    //
+    //         const hit = hitTestResults[ 0 ];
+    //
+    //         reticle.visible = true;
+    //         reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
+    //
+    //     } else {
+    //
+    //         reticle.visible = false;
+    //
+    //     }
+    // }
+
+    const baseLayer = session.renderState.baseLayer;
+    const pose = frame.getViewerPose(xrRefSpace);
+
+    three_renderer.render( three_scene, three_camera );
+    splat_camera._position.x = scale*movement_scale*three_camera.position.x;
+    splat_camera._position.y = -scale*movement_scale*three_camera.position.y;
+    splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
+
+    // let x_position = scale*movement_scale*tcamera.position.x;
+    // let y_position = -scale*movement_scale*tcamera.position.y;
+    // let z_position = scale*movement_scale*tcamera.position.z-initial_z;
+    //
+    // let translation = new SPLAT.Vector3(x_position, y_position, z_position);
+    // camera.position = camera.position.add(translation);
+
+    splat_camera._rotation.x = three_camera.quaternion.x;
+    splat_camera._rotation.y = -three_camera.quaternion.y;
+    splat_camera._rotation.z = -three_camera.quaternion.z;
+    splat_camera._rotation.w = three_camera.quaternion.w;
+}
+
 
 /*
  * =================================================================================================
@@ -115,3 +268,6 @@ async function main()
 
 init();
 main();
+
+window.addEventListener("resize", onWindowResize)
+ARButton.addEventListener( 'click',x=> AR() )
