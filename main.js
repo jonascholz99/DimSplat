@@ -83,7 +83,7 @@ function init() {
     scale = 1;
     movement_scale = 2;
     initial_z = 0;
-    initial_y = -2; //-15
+    initial_y = 0; //-15
 }
 
 /*
