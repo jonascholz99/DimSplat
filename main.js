@@ -23,6 +23,7 @@ if (window.location.hostname === "localhost") {
 let canvas;
 let diminish_button;
 
+
 // AR variables
 let xrRefSpace;
 let ARButton;
@@ -42,7 +43,7 @@ let splat_renderer;
 let splat_scene;
 let splat_camera;
 let splat_object;
-
+let splat_raycaster;
 
 /*
  * =================================================================================================
@@ -75,6 +76,7 @@ function init() {
     splat_camera.data.far =  50;
     splat_camera._position = new SPLAT.Vector3(0, -1.8, 0);
 
+    splat_raycaster = new SPLAT.Raycaster(splat_renderer, false);
 
     ARButton = document.getElementById("ArButton");
     canvas = document.createElement('div');
@@ -112,10 +114,17 @@ function updateLoadingProgress(progress) {
 }
 
 function DiminishView() {
-    splat_object.splats.forEach(async singleSplat => {
-        singleSplat.Render(false);
-    })
-    splat_object.updateRenderingOfSplats();
+    var selectedSplat = splat_raycaster.testCameraViewFrustum(splat_camera);
+    if (selectedSplat !== null){
+        console.log("found: " + selectedSplat.length)
+        splat_object.splats.forEach(async singleSplat => {
+            singleSplat.Render(false);
+        })
+        selectedSplat.forEach(singleSplat => {
+            singleSplat.Render(true)
+        });
+        splat_object.updateRenderingOfSplats();
+    }
 }
 
 /*
