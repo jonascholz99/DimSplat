@@ -138,7 +138,7 @@ function AR()
 {
     // when entering AR show no splats at the beginning
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.Render(false);
+        singleSplat.ChangeColor(new SPLAT.Vector4(singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 8));
     })
     splat_object.updateRenderingOfSplats();
     
