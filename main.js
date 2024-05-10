@@ -262,6 +262,8 @@ function onXRFrame(t, frame) {
         let deltaPosition = three_camera.position - three_camera_setup_position;
         // let deltaRotation =  three_camera.quaternion.multiply(three_camera_setup_rotation.invert());
 
+        console.log("three_camera.position: " + three_camera.position)
+        console.log("three_camera_setup_position: " + three_camera_setup_position)
         console.log("delta Position: " + deltaPosition)
         splat_camera._position.x = scale*movement_scale*three_camera.position.x;
         splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
