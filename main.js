@@ -154,8 +154,8 @@ function handleTouchOrClick() {
     document.removeEventListener('touchstart', handleTouchOrClick);
     document.removeEventListener('click', handleTouchOrClick);
 
-    three_camera_setup_position = three_camera.position;
-    three_camera_setup_rotation = three_camera.quaternion;
+    three_camera_setup_position = three_camera.position.clone();
+    three_camera_setup_rotation = three_camera.quaternion.clone();
     console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
     splat_placed = true;
 }
