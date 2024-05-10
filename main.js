@@ -261,6 +261,7 @@ function onXRFrame(t, frame) {
     three_renderer.render( three_scene, three_camera );
     if(splat_placed) {
         let deltaPosition = new THREE.Vector3(three_camera.position.x - three_camera_setup_position.x, three_camera.position.y - three_camera_setup_position.y, three_camera.position.z - three_camera_setup_position.z);
+        console.log("delta Position: (" + deltaPosition.x + ", " + deltaPosition.y + ", " + deltaPosition.z + ")")
         // let deltaRotation =  three_camera.quaternion.multiply(three_camera_setup_rotation.invert());
         
         // splat_camera._position.x = scale*movement_scale*three_camera.position.x;
