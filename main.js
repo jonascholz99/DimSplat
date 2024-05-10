@@ -149,9 +149,6 @@ function handleTouchOrClick() {
     hideHint();
     document.removeEventListener('touchstart', handleTouchOrClick);
     document.removeEventListener('click', handleTouchOrClick);
-
-    three_camera_setup_position = three_camera.position;
-    three_camera_setup_rotation = three_camera.quaternion;
     
     splat_placed = true;
 }
@@ -166,6 +163,9 @@ function handleTouchOrClick() {
 function AR()
 {
     // when entering AR show no splats at the beginning
+    three_camera_setup_position = three_camera.position;
+    three_camera_setup_rotation = three_camera.quaternion;
+    
     showHint();
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.ChangeColor(new SPLAT.Vector4(singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25));
