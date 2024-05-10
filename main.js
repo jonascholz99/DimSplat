@@ -259,16 +259,16 @@ function onXRFrame(t, frame) {
 
     three_renderer.render( three_scene, three_camera );
     if(splat_placed) {
-        // let deltaPosition = three_camera.position - three_camera_setup_position;
+        let deltaPosition = three_camera.position - three_camera_setup_position;
         // let deltaRotation =  three_camera.quaternion.multiply(three_camera_setup_rotation.invert());
 
-        splat_camera._position.x = scale*movement_scale*three_camera.position.x;
-        splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
-        splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
+        // splat_camera._position.x = scale*movement_scale*three_camera.position.x;
+        // splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
+        // splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
         
-        // splat_camera._position.x = scale*movement_scale*deltaPosition.x;
-        // splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
-        // splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
+        splat_camera._position.x = scale*movement_scale*deltaPosition.x;
+        splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
+        splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
 
         // splat_camera._rotation = splat_camera._rotation.multiply(new SPLAT.Quaternion(three_camera.quaternion.x, three_camera.quaternion.y, three_camera.quaternion.z, three_camera.quaternion.w))
         splat_camera._rotation.x = three_camera.quaternion.x;
