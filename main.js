@@ -153,7 +153,10 @@ function handleTouchOrClick() {
     hideHint();
     document.removeEventListener('touchstart', handleTouchOrClick);
     document.removeEventListener('click', handleTouchOrClick);
-    
+
+    three_camera_setup_position = three_camera.position;
+    three_camera_setup_rotation = three_camera.quaternion;
+    console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
     splat_placed = true;
 }
 
@@ -282,10 +285,6 @@ function onXRFrame(t, frame) {
     if(first_frame) {
         first_frame = false;
         console.log("firstFrame");
-
-        three_camera_setup_position = three_camera.position;
-        three_camera_setup_rotation = three_camera.quaternion;
-        console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
     }
 }
 
