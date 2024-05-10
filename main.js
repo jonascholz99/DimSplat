@@ -25,6 +25,9 @@ let diminish_button;
 let floatingText;
 let splat_placed;
 
+let three_camera_setup_position;
+let three_camera_setup_rotation;
+
 // AR variables
 let xrRefSpace;
 let ARButton;
@@ -86,6 +89,9 @@ function init() {
     diminish_button = document.getElementById("diminish")
     floatingText = document.getElementById('floatingText');
     splat_placed = false;
+
+    three_camera_setup_position = new THREE.Vector3();
+    three_camera_setup_rotation = new THREE.Quaternion();
     
     scale = 1;
     movement_scale = 2;
@@ -144,6 +150,9 @@ function handleTouchOrClick() {
     document.removeEventListener('touchstart', handleTouchOrClick);
     document.removeEventListener('click', handleTouchOrClick);
 
+    three_camera_setup_position = three_camera.position.clone();
+    three_camera_setup_rotation = three_camera.quaternion.clone();
+    
     splat_placed = true;
 }
 
@@ -249,14 +258,18 @@ function onXRFrame(t, frame) {
 
     three_renderer.render( three_scene, three_camera );
     if(splat_placed) {
-        splat_camera._position.x = scale*movement_scale*three_camera.position.x;
-        splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
-        splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
+        let deltaPosition = three_camera.position - three_camera_setup_position;
+        let deltaRotation =  three_camera.quaternion.multiply(three_camera_setup_rotation.invert());
+        
+        splat_camera._position.x = scale*movement_scale*deltaPosition.x;
+        splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
+        splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
 
-        splat_camera._rotation.x = three_camera.quaternion.x;
-        splat_camera._rotation.y = -three_camera.quaternion.y;
-        splat_camera._rotation.z = -three_camera.quaternion.z;
-        splat_camera._rotation.w = three_camera.quaternion.w;   
+        splat_camera._rotation = splat_camera._rotation.multiply(new SPLAT.Quaternion(three_camera.quaternion.x, three_camera.quaternion.y, three_camera.quaternion.z, three_camera.quaternion.w))
+        // splat_camera._rotation.x = three_camera.quaternion.x;
+        // splat_camera._rotation.y = -three_camera.quaternion.y;
+        // splat_camera._rotation.z = -three_camera.quaternion.z;
+        // splat_camera._rotation.w = three_camera.quaternion.w;   
     }
 }
 
