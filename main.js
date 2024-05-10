@@ -275,11 +275,11 @@ function onXRFrame(t, frame) {
         splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
         splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
 
-        // splat_camera._rotation = splat_camera._rotation.multiply(new SPLAT.Quaternion(three_camera.quaternion.x, three_camera.quaternion.y, three_camera.quaternion.z, three_camera.quaternion.w))
-        splat_camera._rotation.x = three_camera.quaternion.x;
-        splat_camera._rotation.y = -three_camera.quaternion.y;
-        splat_camera._rotation.z = -three_camera.quaternion.z;
-        splat_camera._rotation.w = three_camera.quaternion.w;   
+        splat_camera._rotation = splat_camera._rotation.multiply(new SPLAT.Quaternion(deltaRotation.x, deltaRotation.y, deltaRotation.z, deltaRotation.w))
+        // splat_camera._rotation.x = three_camera.quaternion.x;
+        // splat_camera._rotation.y = -three_camera.quaternion.y;
+        // splat_camera._rotation.z = -three_camera.quaternion.z;
+        // splat_camera._rotation.w = three_camera.quaternion.w;   
     }
 
     if(first_frame) {
