@@ -224,14 +224,14 @@ function onXRFrame(t, frame) {
     const pose = frame.getViewerPose(xrRefSpace);
 
     three_renderer.render( three_scene, three_camera );
-    splat_camera._position.x = scale*movement_scale*three_camera.position.x;
-    splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
-    splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
-
-    splat_camera._rotation.x = three_camera.quaternion.x;
-    splat_camera._rotation.y = -three_camera.quaternion.y;
-    splat_camera._rotation.z = -three_camera.quaternion.z;
-    splat_camera._rotation.w = three_camera.quaternion.w;
+    // splat_camera._position.x = scale*movement_scale*three_camera.position.x;
+    // splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
+    // splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
+    //
+    // splat_camera._rotation.x = three_camera.quaternion.x;
+    // splat_camera._rotation.y = -three_camera.quaternion.y;
+    // splat_camera._rotation.z = -three_camera.quaternion.z;
+    // splat_camera._rotation.w = three_camera.quaternion.w;
 }
 
 
