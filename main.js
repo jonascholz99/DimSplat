@@ -25,8 +25,8 @@ let diminish_button;
 let floatingText;
 let splat_placed;
 
-let three_camera_setup_position;
-let three_camera_setup_rotation;
+// let three_camera_setup_position;
+// let three_camera_setup_rotation;
 
 // AR variables
 let xrRefSpace;
@@ -90,8 +90,8 @@ function init() {
     floatingText = document.getElementById('floatingText');
     splat_placed = false;
 
-    three_camera_setup_position = new THREE.Vector3();
-    three_camera_setup_rotation = new THREE.Quaternion();
+    // three_camera_setup_position = new THREE.Vector3();
+    // three_camera_setup_rotation = new THREE.Quaternion();
     
     scale = 1;
     movement_scale = 2;
@@ -150,8 +150,8 @@ function handleTouchOrClick() {
     document.removeEventListener('touchstart', handleTouchOrClick);
     document.removeEventListener('click', handleTouchOrClick);
 
-    three_camera_setup_position = three_camera.position.clone();
-    three_camera_setup_rotation = three_camera.quaternion.clone();
+    // three_camera_setup_position = three_camera.position.clone();
+    // three_camera_setup_rotation = three_camera.quaternion.clone();
     
     splat_placed = true;
 }
@@ -259,8 +259,8 @@ function onXRFrame(t, frame) {
 
     three_renderer.render( three_scene, three_camera );
     if(splat_placed) {
-        let deltaPosition = three_camera.position - three_camera_setup_position;
-        let deltaRotation =  three_camera.quaternion.multiply(three_camera_setup_rotation.invert());
+        // let deltaPosition = three_camera.position - three_camera_setup_position;
+        // let deltaRotation =  three_camera.quaternion.multiply(three_camera_setup_rotation.invert());
 
         splat_camera._position.x = scale*movement_scale*three_camera.position.x;
         splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
