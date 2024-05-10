@@ -28,6 +28,8 @@ let splat_placed;
 let three_camera_setup_position;
 let three_camera_setup_rotation;
 
+let first_frame;
+
 // AR variables
 let xrRefSpace;
 let ARButton;
@@ -92,6 +94,8 @@ function init() {
 
     three_camera_setup_position = new THREE.Vector3();
     three_camera_setup_rotation = new THREE.Quaternion();
+
+    first_frame = true;
     
     scale = 1;
     movement_scale = 2;
@@ -163,9 +167,6 @@ function handleTouchOrClick() {
 function AR()
 {
     // when entering AR show no splats at the beginning
-    three_camera_setup_position = three_camera.position;
-    three_camera_setup_rotation = three_camera.quaternion;
-    
     showHint();
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.ChangeColor(new SPLAT.Vector4(singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25));
@@ -256,7 +257,7 @@ function onXRFrame(t, frame) {
 
     const baseLayer = session.renderState.baseLayer;
     const pose = frame.getViewerPose(xrRefSpace);
-
+    
     three_renderer.render( three_scene, three_camera );
     if(splat_placed) {
         let deltaPosition = three_camera.position - three_camera_setup_position;
@@ -278,6 +279,15 @@ function onXRFrame(t, frame) {
         splat_camera._rotation.y = -three_camera.quaternion.y;
         splat_camera._rotation.z = -three_camera.quaternion.z;
         splat_camera._rotation.w = three_camera.quaternion.w;   
+    }
+
+    if(first_frame) {
+        first_frame = false;
+        console.log("firstFrame");
+
+        three_camera_setup_position = three_camera.position;
+        three_camera_setup_rotation = three_camera.quaternion;
+        console.log("three_camera_setup_position: " + three_camera_setup_position)
     }
 }
 
