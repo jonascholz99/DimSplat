@@ -131,11 +131,11 @@ function DiminishView() {
     if (selectedSplat !== null){
         console.log("found: " + selectedSplat.length)
         splat_object.splats.forEach(async singleSplat => {
-            singleSplat.Render(false);
+            singleSplat.Render(true);
         })
-        selectedSplat.forEach(singleSplat => {
-            singleSplat.Render(true)
-        });
+        // selectedSplat.forEach(singleSplat => {
+        //     singleSplat.Render(true)
+        // });
         splat_object.updateRenderingOfSplats();
     }
 }
@@ -281,10 +281,11 @@ function onXRFrame(t, frame) {
         splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
         splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
         
-        splat_camera._rotation.x = deltaRotation.x;
-        splat_camera._rotation.y = -deltaRotation.y;
-        splat_camera._rotation.z = -deltaRotation.z;
-        splat_camera._rotation.w = deltaRotation.w;
+        // rotation needs to be changed
+        splat_camera._rotation.x = three_camera.quaternion.x;
+        splat_camera._rotation.y = -three_camera.quaternion.y;
+        splat_camera._rotation.z = -three_camera.quaternion.z;
+        splat_camera._rotation.w = three_camera.quaternion.w;
     }
 
     if(first_frame) {
