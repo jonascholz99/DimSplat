@@ -22,7 +22,8 @@ if (window.location.hostname === "localhost") {
 // general variables
 let canvas;
 let diminish_button;
-
+let floatingText;
+let splat_placed;
 
 // AR variables
 let xrRefSpace;
@@ -83,7 +84,9 @@ function init() {
     document.body.appendChild( canvas );
     canvas.appendChild( three_renderer.domElement );
     diminish_button = document.getElementById("diminish")
-
+    floatingText = document.getElementById('floatingText');
+    splat_placed = false;
+    
     scale = 1;
     movement_scale = 2;
     initial_z = 0;
@@ -127,6 +130,23 @@ function DiminishView() {
     }
 }
 
+function showHint() {
+    floatingText.style.display = 'block';
+}
+
+function hideHint() {
+    floatingText.style.display = 'none';
+}
+
+function handleTouchOrClick() {
+    console.log('Bildschirm wurde berührt oder geklickt!');
+    hideHint();
+    document.removeEventListener('touchstart', handleTouchOrClick);
+    document.removeEventListener('click', handleTouchOrClick);
+
+    splat_placed = true;
+}
+
 /*
  * =================================================================================================
  *  Section: AR
@@ -137,10 +157,14 @@ function DiminishView() {
 function AR()
 {
     // when entering AR show no splats at the beginning
+    showHint();
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.ChangeColor(new SPLAT.Vector4(singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 8));
+        singleSplat.ChangeColor(new SPLAT.Vector4(singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25));
     })
     splat_object.updateRenderingOfSplats();
+
+    document.addEventListener('touchstart', handleTouchOrClick, { once: true });
+    document.addEventListener('click', handleTouchOrClick, { once: true });
     
     var currentSession = null;
 
@@ -224,14 +248,16 @@ function onXRFrame(t, frame) {
     const pose = frame.getViewerPose(xrRefSpace);
 
     three_renderer.render( three_scene, three_camera );
-    // splat_camera._position.x = scale*movement_scale*three_camera.position.x;
-    // splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
-    // splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
-    //
-    // splat_camera._rotation.x = three_camera.quaternion.x;
-    // splat_camera._rotation.y = -three_camera.quaternion.y;
-    // splat_camera._rotation.z = -three_camera.quaternion.z;
-    // splat_camera._rotation.w = three_camera.quaternion.w;
+    if(splat_placed) {
+        splat_camera._position.x = scale*movement_scale*three_camera.position.x;
+        splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
+        splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
+
+        splat_camera._rotation.x = three_camera.quaternion.x;
+        splat_camera._rotation.y = -three_camera.quaternion.y;
+        splat_camera._rotation.z = -three_camera.quaternion.z;
+        splat_camera._rotation.w = three_camera.quaternion.w;   
+    }
 }
 
 
@@ -260,5 +286,8 @@ init();
 main();
 
 window.addEventListener("resize", onWindowResize)
-ARButton.addEventListener( 'click',x=> AR() )
+ARButton.addEventListener( 'click',function (event) {
+    event.stopPropagation();
+    AR();
+})
 diminish_button.addEventListener( 'click', x => DiminishView() )

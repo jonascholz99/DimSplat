@@ -37,3 +37,29 @@ body {
     background-color: rgba(255, 255, 255, 0.5);
     z-index: 100;
 }
+
+@keyframes floatAnimation {
+    0% {
+        transform: translateY(0px) translateX(-50%);
+    }
+    50% {
+        transform: translateY(-30px) translateX(-50%);
+    }
+    100% {
+        transform: translateY(0px) translateX(-50%);
+    }
+}
+
+#floatingText {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    text-align: center;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    animation: floatAnimation 3s ease-in-out infinite;
+    font-family: Arial, sans-serif;
+    display: none; /* Wird durch JavaScript gesteuert */
+}
