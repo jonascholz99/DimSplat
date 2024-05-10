@@ -265,15 +265,15 @@ function onXRFrame(t, frame) {
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
         console.log("delta Position: (" + deltaPosition.x + ", " + deltaPosition.y + ", " + deltaPosition.z + ")")
-        let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_quaternion.clone().invert());
+        let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_rotation.clone().invert());
         console.log("delta Rotation: (" + deltaRotation.x + ", " + deltaRotation.y + ", " + deltaRotation.z + ", " + deltaRotation.w + ")")
         // splat_camera._position.x = scale*movement_scale*three_camera.position.x;
         // splat_camera._position.y = -scale*movement_scale*three_camera.position.y-initial_y;
         // splat_camera._position.z = -scale*movement_scale*three_camera.position.z-initial_z;
         
-        splat_camera._position.x = scale*movement_scale*(three_camera.position.x-three_camera_setup_position.x);
-        splat_camera._position.y = -scale*movement_scale*(three_camera.position.y-three_camera_setup_position.y)-initial_y;
-        splat_camera._position.z = -scale*movement_scale*(three_camera.position.z-three_camera_setup_position.z)-initial_z;
+        splat_camera._position.x = scale*movement_scale*deltaPosition.x;
+        splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
+        splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
 
         // splat_camera._rotation = splat_camera._rotation.multiply(new SPLAT.Quaternion(three_camera.quaternion.x, three_camera.quaternion.y, three_camera.quaternion.z, three_camera.quaternion.w))
         splat_camera._rotation.x = three_camera.quaternion.x;
