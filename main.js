@@ -245,6 +245,7 @@ function getXRSessionInit(mode, options) {
         newInit.requiredFeatures = newInit.requiredFeatures.concat( sessionInit.requiredFeatures );
     }
     return newInit;
+    
 }
 
 function onXRFrame(t, frame) {
