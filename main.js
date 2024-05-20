@@ -10,15 +10,6 @@ import * as THREE from 'three'
  *      that control the application behavior throughout its runtime.
  */
 
-// loading from base path
-let basePath;
-
-if (window.location.hostname === "localhost") {
-    basePath = "./DimSplat/public/";
-} else {
-    basePath = "./";
-}
-
 // general variables
 let canvas;
 let diminish_button;
@@ -304,7 +295,8 @@ function onXRFrame(t, frame) {
  */
 async function main()
 {
-    const url = `${basePath}splats/edit_living_room.splat`;
+    const url = `./splats/edit_living_room.splat`;
+    console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene, (progress) => (updateLoadingProgress(Math.round(progress * 100))));
 
     const frame = () => {
