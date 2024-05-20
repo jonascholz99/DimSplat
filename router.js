@@ -9,14 +9,13 @@ function navigate(event) {
     handleRoute();
 }
 
-function handleRoute() {
+function handleRoute(path) {
     const app = document.getElementById('app');
-    const path = window.location.pathname;
 
-    if (path === "/DimSplat" || path === "/DimSplat/") {
+    if (path === "home" || path === "/DimSplat" || path === "/DimSplat/") {
         app.innerHTML = homeHTML;
         import('./homeController.js')
-    } else if (path === "/DimSplat/scene") {
+    } else if (path === "scene" || path === "/DimSplat/scene") {
         if (navigator.xr) {
             navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
                 if (supported) {
@@ -29,9 +28,9 @@ function handleRoute() {
                 console.error("Error checking WebXR support:", error);
             });
         } else {
-            // app.innerHTML = noWebXRHTML;
-            app.innerHTML = DRSceneHTML;
-            import('./main.js');
+            app.innerHTML = noWebXRHTML;
+            // app.innerHTML = DRSceneHTML;
+            // import('./main.js');
         }
         
     } else {
@@ -39,6 +38,11 @@ function handleRoute() {
     }
 }
 
-window.addEventListener('popstate', handleRoute);
-
-handleRoute();
+document.body.addEventListener('click', event => {
+    if (event.target.matches('a.button')) {
+        event.preventDefault();
+        const path = event.target.getAttribute('href');
+        handleRoute(path === "/DimSplat/scene" ? "scene" : "home");
+    }
+});
+handleRoute("/DimSplat/"); // Initialer Aufruf
