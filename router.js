@@ -22,7 +22,8 @@ function handleRoute(path) {
                     app.innerHTML = DRSceneHTML;
                     import('./main.js');
                 } else {
-                    app.innerHTML = noWebXRHTML;
+                    app.innerHTML = DRSceneHTML;
+                    import('./main.js');
                 }
             }).catch((error) => {
                 console.error("Error checking WebXR support:", error);
