@@ -1,7 +1,7 @@
 export const noWebXRHTML = `
 <div class="content-section">
     <div class="content-block">
-        <img src="./public/icons/info.svg" alt="Icon">
+        <img src="./icons/info.svg" alt="Icon">
         <div class="text-content">
             <h3>Info</h3>
             <p>
@@ -14,7 +14,7 @@ export const noWebXRHTML = `
                 <a href="https://apps.apple.com/de/app/xr-browser/id1588029989" target="_blank">XR-Browser</a>
             </p>
         </div>       
-        <a id="backButton" href="/DimSplat" class="button">Back to start</a> 
+        <a id="backButton" href="/DimSplat/" class="button">Back to start</a> 
     </div>               
 </div>
 `;
