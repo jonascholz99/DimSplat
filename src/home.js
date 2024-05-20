@@ -7,7 +7,7 @@ export const homeHTML = `
 </div>
 <div class="content-section">
     <div class="content-block">
-        <img src="./DimSplat/public/icons/info.svg" alt="Icon">
+        <img src="./icons/info.svg" alt="Icon">
         <div class="text-content">
             <h3>About</h3>
             <p>
@@ -17,7 +17,7 @@ export const homeHTML = `
     </div>        
     
     <div class="content-block">
-        <img src="./DimSplat/public/icons/user.svg" alt="Icon">
+        <img src="./icons/user.svg" alt="Icon">
         <div class="text-content">
             <h3>Author</h3>
             <p>Jonas Scholz</p>
@@ -26,7 +26,7 @@ export const homeHTML = `
     </div>
     
     <div class="content-block">
-        <img src="./DimSplat/public/icons/users.svg" alt="Icon">
+        <img src="./icons/users.svg" alt="Icon">
         <div class="text-content">
             <h3>Supervisors</h3>
             <p>Prof. Dr. Arnulph Fuhrmann</p>
@@ -36,8 +36,8 @@ export const homeHTML = `
     <!-- Weitere Content-Blöcke können hier hinzugefügt werden -->
     
     <div class="logos">
-        <img src="./DimSplat/public/logo/th.png" alt="First Logo">
-        <img src="./DimSplat/public/logo/yona.png" alt="Second Logo">
+        <img src="./logo/th.png" alt="First Logo">
+        <img src="./logo/yona.png" alt="Second Logo">
     </div>    
 </div>
 `;
