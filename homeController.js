@@ -1,4 +1,8 @@
 
+// Set the background image for the hero section
+const heroSection = document.querySelector('.hero-section');
+heroSection.style.backgroundImage = "url('./IntroScreen.jpg')";
+
 const logos = document.querySelector('.logos');
 
 window.setTimeout(() => {
