@@ -121,7 +121,7 @@ function updateLoadingProgress(progress) {
 
 function DiminishScene() {
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.Render(true);
+        singleSplat.Rendered = 1;
     })
     splat_object.updateRenderingOfSplats();
 }
@@ -131,7 +131,7 @@ function DiminishFrustum() {
     if (selectedSplat !== null){
         console.log("found: " + selectedSplat.length)
         selectedSplat.forEach(singleSplat => {
-            singleSplat.Render(true)
+            singleSplat.Rendered = 1;
         });
         splat_object.updateRenderingOfSplats();
     }
@@ -158,12 +158,12 @@ function handleTouchOrClick() {
 
     // set transparency back to normal
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.ChangeColor(undefined);
+        singleSplat.ResetColor();
     })
     
     // render none
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.Render(false);
+        singleSplat.Rendered = 0;
     })
     splat_object.updateRenderingOfSplats();
     
@@ -185,7 +185,7 @@ function AR()
     // when entering AR show no splats at the beginning
     showHint();
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.ChangeColor(new SPLAT.Vector4(singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25));
+        singleSplat.Color = new Uint8Array([singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25]);
     })
     splat_object.updateRenderingOfSplats();
 
