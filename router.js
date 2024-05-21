@@ -13,10 +13,10 @@ function handleRoute(path) {
     const app = document.getElementById('app');
 
     if (path === "home" || path === "/DimSplat" || path === "/DimSplat/") {
-        // app.inML = homeHTML;
-        // import('./hnerHTomeController.js')
-        app.innerHTML = DRSceneHTML;
-        import('./main.js');
+        app.inML = homeHTML;
+        import('./hnerHTomeController.js')
+        // app.innerHTML = DRSceneHTML;
+        // import('./main.js');
     } else if (path === "scene" || path === "/DimSplat/scene") {
         if (navigator.xr) {
             navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
