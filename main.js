@@ -119,16 +119,20 @@ function updateLoadingProgress(progress) {
     }
 }
 
-function DiminishView() {
+function DiminishScene() {
+    splat_object.splats.forEach(async singleSplat => {
+        singleSplat.Render(true);
+    })
+    splat_object.updateRenderingOfSplats();
+}
+
+function DiminishFrustum() {
     var selectedSplat = splat_raycaster.testCameraViewFrustum(splat_camera);
     if (selectedSplat !== null){
         console.log("found: " + selectedSplat.length)
-        splat_object.splats.forEach(async singleSplat => {
-            singleSplat.Render(true);
-        })
-        // selectedSplat.forEach(singleSplat => {
-        //     singleSplat.Render(true)
-        // });
+        selectedSplat.forEach(singleSplat => {
+            singleSplat.Render(true)
+        });
         splat_object.updateRenderingOfSplats();
     }
 }
@@ -318,5 +322,5 @@ ARButton.addEventListener( 'click',function (event) {
     event.stopPropagation();
     AR();
 })
-diminish_button_scene.addEventListener( 'click', x => DiminishView() )
-diminish_button_frustum.addEventListener( 'click', x => DiminishView() )
+diminish_button_scene.addEventListener( 'click', x => DiminishScene() )
+diminish_button_frustum.addEventListener( 'click', x => DiminishFrustum() )
