@@ -14,7 +14,7 @@ function handleRoute(path) {
 
     if (path === "home" || path === "/DimSplat" || path === "/DimSplat/") {
         app.inML = homeHTML;
-        import('./hnerHTomeController.js')
+        import('./homeController.js')
         // app.innerHTML = DRSceneHTML;
         // import('./main.js');
     } else if (path === "scene" || path === "/DimSplat/scene") {
