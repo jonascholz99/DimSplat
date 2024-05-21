@@ -177,7 +177,7 @@ function handleTouchOrClick() {
  * =================================================================================================
  *  Section: AR
  * =================================================================================================
- *      
+ *      This section will provide all functionality for AR and DR experience
  */
 
 function AR()
