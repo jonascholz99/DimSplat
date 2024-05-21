@@ -13,7 +13,7 @@ function handleRoute(path) {
     const app = document.getElementById('app');
 
     if (path === "home" || path === "/DimSplat" || path === "/DimSplat/") {
-        app.inML = homeHTML;
+        app.innerHTML = homeHTML;
         import('./homeController.js')
         // app.innerHTML = DRSceneHTML;
         // import('./main.js');
