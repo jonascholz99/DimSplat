@@ -148,6 +148,11 @@ function hideHint() {
 function handleTouchOrClick() {
     console.log('Bildschirm wurde berührt oder geklickt!');
     hideHint();
+
+    // show diminish buttons
+    diminish_button_scene.style.display = 'block';
+    diminish_button_frustum.style.display = 'block';
+    
     document.removeEventListener('touchstart', handleTouchOrClick);
     document.removeEventListener('click', handleTouchOrClick);
 
