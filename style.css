@@ -8,7 +8,7 @@ body {
 
 #loadingProgress {
     position: fixed;
-    top: 60px;
+    top: 120px;
     left: 0;
     margin: 20px;
     background-color: rgba(255, 255, 255, 0.5);
@@ -26,9 +26,21 @@ body {
     height: 2rem;
 }
 
-#diminish {
+#diminish-scene {
     position: absolute;
     top: 0;
+    left: 0;
+    padding: 10px;
+    margin: 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 100;
+}
+
+#diminish-frustum {
+    position: absolute;
+    top: 65px;
     left: 0;
     padding: 10px;
     margin: 20px;

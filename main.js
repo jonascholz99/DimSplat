@@ -12,7 +12,8 @@ import * as THREE from 'three'
 
 // general variables
 let canvas;
-let diminish_button;
+let diminish_button_scene;
+let diminish_button_frustum;
 let floatingText;
 let splat_placed;
 
@@ -79,7 +80,8 @@ function init() {
     canvas = document.createElement('div');
     document.body.appendChild( canvas );
     canvas.appendChild( three_renderer.domElement );
-    diminish_button = document.getElementById("diminish")
+    diminish_button_scene = document.getElementById("diminish-scene")
+    diminish_button_frustum = document.getElementById("diminish-frustum")
     floatingText = document.getElementById('floatingText');
     splat_placed = false;
 
@@ -316,4 +318,5 @@ ARButton.addEventListener( 'click',function (event) {
     event.stopPropagation();
     AR();
 })
-diminish_button.addEventListener( 'click', x => DiminishView() )
+diminish_button_scene.addEventListener( 'click', x => DiminishView() )
+diminish_button_frustum.addEventListener( 'click', x => DiminishView() )
