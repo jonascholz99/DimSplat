@@ -1,5 +1,5 @@
 export const DRSceneHTML = `
-<div>
+<div id="diminish-scene">
     <div id="loader-overlay">
         <div id="spinner"></div>
         <div id="loading-text">Loading data and creating splat scene...</div>
@@ -8,8 +8,8 @@ export const DRSceneHTML = `
     
     <div id="loadingProgress">Lädt... 0%</div>
 
-    <button id="diminish-scene"><img src="./icons/home.svg" alt="Icon"></button>
-    <button id="diminish-frustum"><img src="./icons/camera.svg" alt="Icon"></button>
+    <button id="diminish-scene-button"><img src="./icons/home.svg" alt="Icon"></button>
+    <button id="diminish-frustum-button"><img src="./icons/camera.svg" alt="Icon"></button>
     
     <button id="ArButton">ENTER AR</button>
 

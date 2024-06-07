@@ -79,11 +79,10 @@ function init() {
     splat_raycaster = new SPLAT.Raycaster(splat_renderer, false);
 
     ARButton = document.getElementById("ArButton");
-    canvas = document.createElement('div');
-    document.body.appendChild( canvas );
+    canvas = document.getElementById('diminish-scene');
     canvas.appendChild( three_renderer.domElement );
-    diminish_button_scene = document.getElementById("diminish-scene")
-    diminish_button_frustum = document.getElementById("diminish-frustum")
+    diminish_button_scene = document.getElementById("diminish-scene-button")
+    diminish_button_frustum = document.getElementById("diminish-frustum-button")
     floatingText = document.getElementById('floatingText');
     loaderOverlay = document.getElementById('loader-overlay');
     splat_placed = false;

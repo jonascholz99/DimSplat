@@ -26,7 +26,7 @@ body {
     height: 2rem;
 }
 
-#diminish-scene {
+#diminish-scene-button {
     position: absolute;
     top: 0;
     left: 0;
@@ -39,7 +39,7 @@ body {
     display: none;
 }
 
-#diminish-frustum {
+#diminish-frustum-button {
     position: absolute;
     top: 65px;
     left: 0;
