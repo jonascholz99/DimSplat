@@ -11,10 +11,16 @@ import * as THREE from 'three'
  */
 
 // general variables
+const DRState = {
+    INTRO: 'intro',
+    ENTERED: 'entered',
+    PLACED: 'placed'
+}
+let drState = DRState.INTRO;
+
 let canvas;
 let diminish_button_scene;
 let diminish_button_frustum;
-let floatingText;
 let splat_placed;
 
 let three_camera_setup_position;
@@ -27,6 +33,7 @@ let loaderOverlay;
 const ButtonFunction = {
     NONE: 'none',
     AR: 'ar',
+    SCENE: 'scene',
     MASK1: 'mask1'
 }
 let multifunctionalButton;
@@ -91,7 +98,7 @@ function init() {
     canvas.appendChild( three_renderer.domElement );
     diminish_button_scene = document.getElementById("diminish-scene-button")
     diminish_button_frustum = document.getElementById("diminish-frustum-button")
-    floatingText = document.getElementById('floatingText');
+    
     loaderOverlay = document.getElementById('loader-overlay');
     splat_placed = false;
 
@@ -164,14 +171,27 @@ function initExplanationController() {
 }
 
 function handleExplanationButtonClicked(event) {
-    if(currentExplanationIndex === 3) {
-        hideExplanationWindow();
-        multifunctionalButtonFunction = ButtonFunction.AR;
-        multifunctionalButton.textContent = "Enter AR";
-        multifunctionalButton.style.bottom = '30px';
-    } else {
-        nextExplanation();   
+    if(drState === DRState.INTRO) {
+        if(currentExplanationIndex === 0) {
+            hideExplanationWindow();
+            multifunctionalButtonFunction = ButtonFunction.AR;
+            multifunctionalButton.textContent = "Enter AR";
+            multifunctionalButton.style.bottom = '30px';
+            return;
+        }
+    } else if (drState === DRState.ENTERED) {
+        if(currentExplanationIndex === 3) {
+            hideExplanationWindow();
+            multifunctionalButtonFunction = ButtonFunction.SCENE;
+            multifunctionalButton.textContent = "Szene Platzieren";
+            multifunctionalButton.style.bottom = '30px';
+            return;
+        }
+    } else if(drState === DRState.PLACED) {
+        
     }
+    
+    nextExplanation();
 }
 
 function showExplanationWindow() {
@@ -185,6 +205,14 @@ function hideExplanationWindow() {
 
 function setExplanationIndex(number) {
     currentExplanationIndex = number;
+    
+    if (currentExplanationIndex < videos.length) {
+        videoSource.src = videos[currentExplanationIndex].url;
+        videoElement.load();
+        textElement.innerHTML = `<p>${videos[currentExplanationIndex].text}</p>`;
+    } else {
+        hideExplanationWindow();
+    }
 }
 
 function nextExplanation() {
@@ -216,6 +244,12 @@ function handleMultifunctionalButtonClick(event) {
     event.stopPropagation();
     if(multifunctionalButtonFunction === ButtonFunction.AR) {
         AR();
+        drState = DRState.ENTERED;
+        setExplanationIndex(1);
+        showExplanationWindow();
+    } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
+        OnScenePlaced();
+        drState = DRState.PLACED;
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
         console.log("Mask 1");
     }
@@ -242,17 +276,8 @@ function DiminishFrustum() {
     }
 }
 
-function showHint() {
-    floatingText.style.display = 'block';
-}
-
-function hideHint() {
-    floatingText.style.display = 'none';
-}
-
-function handleTouchOrClick() {
+function OnScenePlaced() {
     console.log('Bildschirm wurde berührt oder geklickt!');
-    hideHint();
 
     // show diminish buttons
     diminish_button_scene.style.display = 'block';
@@ -287,8 +312,6 @@ function handleTouchOrClick() {
 
 function AR()
 {
-    // when entering AR show no splats at the beginning
-    showHint();
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.Color = new Uint8Array([singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25]);
     })
