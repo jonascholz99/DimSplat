@@ -459,6 +459,9 @@ function OnScenePlaced() {
     three_camera_setup_rotation = three_camera.quaternion.clone();
     console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
     splat_placed = true;
+
+    let originRenderProgram = new SPLAT.AxisProgram(splat_renderer, []);
+    splat_renderer.addProgram(originRenderProgram);
 }
 
 /*
