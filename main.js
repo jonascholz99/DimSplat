@@ -1,6 +1,5 @@
 import * as SPLAT from '@jonascholz/gaussian-splatting'
 import * as THREE from 'three'
-import scene from "three/addons/offscreen/scene.js";
 
 /*
  * =================================================================================================
@@ -36,7 +35,8 @@ const ButtonFunction = {
     NONE: 'none',
     AR: 'ar',
     SCENE: 'scene',
-    MASK1: 'mask1'
+    MASK1: 'mask1',
+    MASK2: 'mask2'
 }
 let multifunctionalButton;
 let multifunctionalButtonFunction = ButtonFunction.NONE;
@@ -273,7 +273,10 @@ function handleMultifunctionalButtonClick(event) {
         console.log("Mask 1");
         frustumCreationActive = true;
         addMouseListener();
-    }
+    } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
+    console.log("Mask 2");
+    frustumCreationActive = true;
+}
 
     multifunctionalButton.style.bottom = '-100px';
     multifunctionalButton.textContent = "NONE"
@@ -299,7 +302,6 @@ function DiminishFrustum() {
 }
 
 function addMouseListener() {
-    console.log("add mouse listener")
     document.addEventListener('mouseup', handleMouseDown, true);
 }
 
@@ -340,10 +342,39 @@ function addTouchPoint(touchPoints, number, event) {
     drawRing(x, y, number);
 }
 
+function hideScreenDrawings() {
+    if (currentRing1) {
+        currentRing1.remove();
+    }
+
+    if (currentRing2) {
+        currentRing2.remove();
+    }
+
+    // if (currentRectangle) {
+    //     currentRectangle.remove();
+    // }
+}
+
+function createFrustumFromTouchPoints(touchPoints) {
+    let nearTopLeft = splat_camera.screenToWorldPoint(touchPoints[0].x, touchPoints[0].y);
+    let nearBottomRight = splat_camera.screenToWorldPoint(touchPoints[1].x, touchPoints[1].y);
+    let nearTopRight = splat_camera.screenToWorldPoint(touchPoints[1].x, touchPoints[0].y);
+    let nearBottomLeft = splat_camera.screenToWorldPoint(touchPoints[0].x, touchPoints[1].y);
+
+    let farTopLeft = nearTopLeft.add(splat_camera.screenPointToRay(touchPoints[0].x, touchPoints[0].y).multiply(15));
+    let farTopRight = nearTopRight.add(splat_camera.screenPointToRay(touchPoints[1].x, touchPoints[0].y).multiply(15));
+    let farBottomLeft = nearBottomLeft.add(splat_camera.screenPointToRay(touchPoints[0].x, touchPoints[1].y).multiply(15));
+    let farBottomRight = nearBottomRight.add(splat_camera.screenPointToRay(touchPoints[1].x, touchPoints[1].y).multiply(15));
+
+    let frustum = new SPLAT.Frustum();
+    frustum.setFromPoints(nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight, farTopLeft, farTopRight,farBottomLeft, farBottomRight);
+
+    return frustum;
+}
+
 function handleMouseDown(event) {
     if (event.button === 0) {
-        console.log("handle Mouse down")
-        console.log("frustumCreationActive: " + frustumCreationActive)
         if (frustumCreationActive && touchPoints1.length < 2) {
             if(touchPoints1.length === 0) {
                 addTouchPoint(touchPoints1, 1, event);
@@ -351,42 +382,49 @@ function handleMouseDown(event) {
                 addTouchPoint(touchPoints1, 2, event);
             }
 
-            // if (touchPoints1.length === 2) {
-            //     frustum1 = createFrustumFromTouchPoints(touchPoints1);
-            //     console.log("First Frustum Created");
-            //
-            //     const floatingButton = document.getElementById('floatingButton');
-            //     floatingButton.textContent = "Erneut Maskieren";
-            //     floatingButton.style.bottom = '20px';
-            //     frustumCreationActive = false;
-            //
-            //     setTimeout(function() {
-            //         hideScreenDrawings();
-            //     }, 2000);
-            // }
+            if (touchPoints1.length === 2) {
+                frustum1 = createFrustumFromTouchPoints(touchPoints1);
+                console.log("First Frustum Created");
+
+                multifunctionalButtonFunction = ButtonFunction.MASK2;
+                multifunctionalButton.textContent = "Erneut Markieren";
+                multifunctionalButton.style.bottom = '30px';
+                frustumCreationActive = false;
+
+                setTimeout(function() {
+                    hideScreenDrawings();
+                }, 2000);
+            }
         } 
-        // else if (frustumCreationActive && touchPoints2.length < 2) {
-        //     if(touchPoints2.length == 0) {
-        //         addTouchPoint(touchPoints2, 1, event);
-        //     } else {
-        //         addTouchPoint(touchPoints2, 2, event);
-        //     }
-        //
-        //     if (touchPoints2.length === 2) {
-        //         frustum2 = createFrustumFromTouchPoints(touchPoints2);
-        //         console.log("Second Frustum Created");
-        //
-        //         const floatingButton = document.getElementById('floatingButton');
-        //         floatingButton.textContent = "Diminish";
-        //         floatingButton.style.bottom = '20px';
-        //
-        //         if (frustum1 && frustum2) {
-        //             const intersectionPoints = frustum1.intersectFrustum(frustum2);
-        //             drawIntersectionVolume(intersectionPoints);
-        //         }
-        //     }
-        // }
+        else if (frustumCreationActive && touchPoints2.length < 2) {
+            if(touchPoints2.length === 0) {
+                addTouchPoint(touchPoints2, 1, event);
+            } else {
+                addTouchPoint(touchPoints2, 2, event);
+            }
+
+            if (touchPoints2.length === 2) {
+                frustum2 = createFrustumFromTouchPoints(touchPoints2);
+                console.log("Second Frustum Created");
+
+                // const floatingButton = document.getElementById('floatingButton');
+                // floatingButton.textContent = "Diminish";
+                // floatingButton.style.bottom = '20px';
+
+                if (frustum1 && frustum2) {
+                    const intersectionPoints = frustum1.intersectFrustum(frustum2);
+                    drawIntersectionVolume(intersectionPoints);
+                }
+            }
+        }
     }
+}
+
+function drawIntersectionVolume(box) {
+    box.drawBox(splat_renderer);
+
+    // boxObject = box;
+    hideScreenDrawings();
 }
 
 function OnScenePlaced() {
