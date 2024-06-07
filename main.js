@@ -421,8 +421,8 @@ function handleMouseDown(event) {
                 console.log("Second Frustum Created");
 
                 if (frustum1 && frustum2) {
-                    frustum1.drawFrustum(splat_renderer);
-                    frustum2.drawFrustum(splat_renderer);
+                    // frustum1.drawFrustum(splat_renderer);
+                    // frustum2.drawFrustum(splat_renderer);
                     const intersectionPoints = frustum1.intersectFrustum(frustum2);
                     drawIntersectionVolume(intersectionPoints);
                 }
@@ -432,7 +432,7 @@ function handleMouseDown(event) {
 }
 
 function drawIntersectionVolume(box) {
-    box.drawBox(splat_renderer);
+    // box.drawBox(splat_renderer);
 
     console.log(box);
     
