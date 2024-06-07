@@ -283,8 +283,8 @@ function OnScenePlaced() {
     diminish_button_scene.style.display = 'block';
     diminish_button_frustum.style.display = 'block';
     
-    document.removeEventListener('touchstart', handleTouchOrClick);
-    document.removeEventListener('click', handleTouchOrClick);
+    // document.removeEventListener('touchstart', handleTouchOrClick);
+    // document.removeEventListener('click', handleTouchOrClick);
 
     // set transparency back to normal
     splat_object.splats.forEach(async singleSplat => {
@@ -295,7 +295,7 @@ function OnScenePlaced() {
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.Rendered = 0;
     })
-    splat_object.updateRenderingOfSplats();
+    splat_object.applyRendering();
     
     three_camera_setup_position = three_camera.position.clone();
     three_camera_setup_rotation = three_camera.quaternion.clone();
