@@ -31,20 +31,27 @@ let first_frame;
 let first_frame_splat;
 let loaderOverlay;
 
+let cullByCube;
+
 const ButtonFunction = {
     NONE: 'none',
     AR: 'ar',
     SCENE: 'scene',
     MASK1: 'mask1',
-    MASK2: 'mask2'
+    MASK2: 'mask2',
+    DIMINISH: 'diminish'
 }
 let multifunctionalButton;
 let multifunctionalButtonFunction = ButtonFunction.NONE;
+
+let boxObject;
+let boxFrustum;
 
 // AR variables
 let xrRefSpace;
 let frustumCreationActive;
 
+let screenPoints;
 let touchPoints1, touchPoints2;
 let frustum1, frustum2;
 
@@ -119,11 +126,15 @@ function init() {
     first_frame_splat = true;
 
     frustumCreationActive = false;
+    cullByCube = false
     touchPoints1 = [];
     touchPoints2 = [];
     frustum1 = null;
     frustum2 = null;
 
+    boxObject = null;
+    boxFrustum = new SPLAT.Frustum();
+    
     currentRing1 = null;
     currentRing2 = null;
     
@@ -274,9 +285,11 @@ function handleMultifunctionalButtonClick(event) {
         frustumCreationActive = true;
         addMouseListener();
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
-    console.log("Mask 2");
-    frustumCreationActive = true;
-}
+        console.log("Mask 2");
+        frustumCreationActive = true;
+    } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
+        cullByCube = true;
+    }
 
     multifunctionalButton.style.bottom = '-100px';
     multifunctionalButton.textContent = "NONE"
@@ -407,10 +420,6 @@ function handleMouseDown(event) {
                 frustum2 = createFrustumFromTouchPoints(touchPoints2);
                 console.log("Second Frustum Created");
 
-                // const floatingButton = document.getElementById('floatingButton');
-                // floatingButton.textContent = "Diminish";
-                // floatingButton.style.bottom = '20px';
-
                 if (frustum1 && frustum2) {
                     frustum1.drawFrustum(splat_renderer);
                     frustum2.drawFrustum(splat_renderer);
@@ -425,8 +434,59 @@ function handleMouseDown(event) {
 function drawIntersectionVolume(box) {
     box.drawBox(splat_renderer);
 
-    // boxObject = box;
+    console.log(box);
+    
+    multifunctionalButtonFunction = ButtonFunction.DIMINISH;
+    multifunctionalButton.textContent = "Diminish";
+    multifunctionalButton.style.bottom = '30px';
+
+    boxObject = box;
     hideScreenDrawings();
+}
+
+function updateBoxFrustum() {
+    screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
+    // cullByCube = false;     
+
+    // 2. Finde die minimalen und maximalen x- und y-Werte
+    let minX = Infinity, minY = Infinity;
+    let maxX = -Infinity, maxY = -Infinity;
+
+    for (const point of screenPoints) {
+        if (point.x < minX) minX = point.x;
+        if (point.x > maxX) maxX = point.x;
+        if (point.y < minY) minY = point.y;
+        if (point.y > maxY) maxY = point.y;
+    }
+
+    let nearTopLeft = splat_camera.screenToWorldPoint(minX, maxY);
+    let nearBottomRight = splat_camera.screenToWorldPoint(maxX, minY);
+    let nearTopRight = splat_camera.screenToWorldPoint(maxX, maxY);
+    let nearBottomLeft = splat_camera.screenToWorldPoint(minX, minY);
+
+    let farTopLeft = nearTopLeft.add(splat_camera.screenPointToRay(minX, maxY).multiply(splat_camera.data.far));
+    let farTopRight = nearTopRight.add(splat_camera.screenPointToRay(maxX, maxY).multiply(splat_camera.data.far));
+    let farBottomLeft = nearBottomLeft.add(splat_camera.screenPointToRay(minX, minY).multiply(splat_camera.data.far));
+    let farBottomRight = nearBottomRight.add(splat_camera.screenPointToRay(maxX, minY).multiply(splat_camera.data.far));
+
+    // boxFrustum.ereaseFrustum(renderer);
+    boxFrustum.setFromPoints(nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight, farTopLeft, farTopRight,farBottomLeft, farBottomRight);
+    // boxFrustum.drawFrustum(renderer);    
+
+    const iterator = new SPLAT.OctreeIterator(splat_object._octree.root, boxFrustum);
+    splat_object.data.resetRendering();
+
+    for (let node of iterator) {
+        const nodeData = node.data;
+        if (nodeData && nodeData.data) {
+            for(let singleSplat of nodeData.data) {
+                if(boxFrustum.containsBox(singleSplat.bounds)) {
+                    singleSplat.Rendered = 1;
+                }
+            }
+        }
+    }
+    splat_object.applyRendering();
 }
 
 function OnScenePlaced() {
@@ -594,21 +654,27 @@ function onXRFrame(t, frame) {
  *      In this section, the core program logic is executed. This includes invoking the previously
  *      defined functions and managing the flow of the application.
  */
+
+
 async function main()
 {
     const url = `./splats/edit_living_room.splat`;
     console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
 
+    let frameCounter = 0;
+    const updateInterval = 15;
+    
     const frame = () => {
         splat_renderer.render(splat_scene, splat_camera);
         requestAnimationFrame(frame);
 
-        let originRenderProgram = new SPLAT.AxisProgram(splat_renderer, []);
-        splat_renderer.addProgram(originRenderProgram);
+        // let originRenderProgram = new SPLAT.AxisProgram(splat_renderer, []);
+        // splat_renderer.addProgram(originRenderProgram);
 
-        let gridProgram = new SPLAT.GridProgram(splat_renderer, []);
-        splat_renderer.addProgram(gridProgram);
+        if(cullByCube && frameCounter % updateInterval === 0) {
+            updateBoxFrustum()
+        }
         
         if(first_frame_splat) {
             first_frame_splat = false;
