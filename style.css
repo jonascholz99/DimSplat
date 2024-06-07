@@ -6,26 +6,6 @@ body {
     min-height: 100vh;
 }
 
-#loadingProgress {
-    position: fixed;
-    top: 10px;
-    left: 0;
-    margin: 20px;
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 10px;
-    border-radius: 5px;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-}
-
-#ArButton {
-    position: absolute;
-    top: 80%;
-    left: 40%;
-    width: 20%;
-    height: 2rem;
-}
-
 #diminish-scene-button {
     position: absolute;
     top: 0;
@@ -236,4 +216,70 @@ body {
     color: white;
     text-align: center;
     margin-top: 20px;
+}
+
+.multifunctional-button {
+    position: fixed;
+    bottom: -1000px; 
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    transition: bottom 0.5s ease;
+    z-index: 1000;
+}
+
+/*
+ * =================================================================================================
+ *  Section: Explanation Card
+ * =================================================================================================
+ */
+
+.card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    z-index: 1000; 
+    overflow: hidden; 
+    display: none;
+}
+
+.video {
+    border-radius: 15px 15px 0 0;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.text {
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+.button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: darkgray;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #28a745;
 }

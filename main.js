@@ -24,9 +24,16 @@ let first_frame;
 let first_frame_splat;
 let loaderOverlay;
 
+const ButtonFunction = {
+    NONE: 'none',
+    AR: 'ar',
+    MASK1: 'mask1'
+}
+let multifunctionalButton;
+let multifunctionalButtonFunction = ButtonFunction.NONE;
+
 // AR variables
 let xrRefSpace;
-let ARButton;
 
 let scale;
 let movement_scale;
@@ -78,7 +85,8 @@ function init() {
 
     splat_raycaster = new SPLAT.Raycaster(splat_renderer, false);
 
-    ARButton = document.getElementById("ArButton");
+    multifunctionalButton = document.getElementById("multifunctionalButton");
+    multifunctionalButton.addEventListener('click', handleMultifunctionalButtonClick);
     canvas = document.getElementById('diminish-scene');
     canvas.appendChild( three_renderer.domElement );
     diminish_button_scene = document.getElementById("diminish-scene-button")
@@ -101,6 +109,99 @@ function init() {
 
 /*
  * =================================================================================================
+ *  Section: Explanation
+ * =================================================================================================
+ *      
+ */
+let explanationCanvas;
+
+let videos;
+let currentExplanationIndex;
+
+let videoSource;
+let videoElement;
+let textElement;
+
+let explanationButton;
+
+function initExplanationController() {
+    currentExplanationIndex = 0;
+
+    explanationButton = document.getElementById('nextButton');
+    explanationButton.addEventListener('click', handleExplanationButtonClicked);
+    
+    explanationCanvas = document.getElementById('card')
+    videoSource = document.getElementById('videoSource');
+    videoElement = document.getElementById('video');
+    textElement = document.getElementById('text');
+    
+    videos  = [
+        {
+            url: "./videos/video_keep upright.mp4",
+            text: "Bitte achte darauf, dein Handy während dem platzieren immer aufrecht zu halten"
+        },
+        {
+            url: "./videos/video_move.mp4",
+            text: "Bewege das Handy umher und versuche das transparente Bild möglichst Deckungsleich mit der realen Szene zu bringen. "
+        },
+        {
+            url: "./videos/video_back and forth.mp4",
+            text: "Bewge dich auch nach vorne und Hinten um die Position so gut es geht zu treffen."
+        },
+        {
+            url: "./videos/video_place.mp4",
+            text: "Wenn du zufreiden bist, dann drücke den Button um die Szene zu platzieren. Das Erlebnis kann gleich starten"
+        },
+        {
+            url: "./videos/video_select.mp4",
+            text: "Um nun gleich ein Objekt verschwinden zu lassen, müssen wir erstmal wissen wo es im Raum liegt. Schaue das Objekt dafür mit der Kamera an. Markiere es indem du zweimal auf den Bildschirm klickst. \n Gehe dann auf die Seite des Objekts und markiere es erneut"
+        }
+    ];
+    
+    // set start values
+    videoSource.src = videos[currentExplanationIndex].url;
+    textElement.innerHTML = `<p>${videos[currentExplanationIndex].text}</p>`;
+}
+
+function handleExplanationButtonClicked(event) {
+    if(currentExplanationIndex === 3) {
+        hideExplanationWindow();
+        multifunctionalButtonFunction = ButtonFunction.AR;
+        multifunctionalButton.textContent = "Enter AR";
+        multifunctionalButton.style.bottom = '30px';
+    } else {
+        nextExplanation();   
+    }
+}
+
+function showExplanationWindow() {
+    explanationCanvas.style.display = 'inline';
+    videoElement.load();
+}
+
+function hideExplanationWindow() {
+    explanationCanvas.style.display = 'none';
+}
+
+function setExplanationIndex(number) {
+    currentExplanationIndex = number;
+}
+
+function nextExplanation() {
+    currentExplanationIndex++;
+
+    if (currentExplanationIndex < videos.length) {
+        videoSource.src = videos[currentExplanationIndex].url;
+        videoElement.load();
+        textElement.innerHTML = `<p>${videos[currentExplanationIndex].text}</p>`;
+    } else {
+        hideExplanationWindow();
+    }
+}
+
+
+/*
+ * =================================================================================================
  *  Section: Utilities
  * =================================================================================================
  *      In this section, utility functions that support the main functionality of the program are 
@@ -111,17 +212,18 @@ function onWindowResize() {
     splat_renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-
-function updateLoadingProgress(progress) {
-    var loadingProgressElement = document.getElementById('loadingProgress');
-
-    loadingProgressElement.textContent = `Lädt... ${progress}%`;
-
-    if (progress >= 100) {
-        loadingProgressElement.style.display = 'none';
+function handleMultifunctionalButtonClick(event) {
+    event.stopPropagation();
+    if(multifunctionalButtonFunction === ButtonFunction.AR) {
+        AR();
+    } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
+        console.log("Mask 1");
     }
-}
 
+    multifunctionalButton.style.bottom = '-100px';
+    multifunctionalButton.textContent = "NONE"
+    multifunctionalButtonFunction = ButtonFunction.NONE;
+}
 function DiminishScene() {
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.Rendered = 1;
@@ -190,10 +292,10 @@ function AR()
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.Color = new Uint8Array([singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25]);
     })
-    splat_object.updateRenderingOfSplats();
+    splat_object.applyRendering();
 
-    document.addEventListener('touchstart', handleTouchOrClick, { once: true });
-    document.addEventListener('click', handleTouchOrClick, { once: true });
+    // document.addEventListener('touchstart', handleTouchOrClick, { once: true });
+    // document.addEventListener('click', handleTouchOrClick, { once: true });
     
     var currentSession = null;
 
@@ -209,7 +311,11 @@ function AR()
             sessionInit: options
         });
 
-        navigator.xr.requestSession( 'immersive-ar', sessionInit ).then( onSessionStarted );
+        try {
+            navigator.xr.requestSession( 'immersive-ar', sessionInit ).then( onSessionStarted );            
+        } catch (e) {
+            console.error("Starting AR Session is not possible (" + e + ")")
+        }
     } else {
         currentSession.end();
     }
@@ -224,8 +330,7 @@ function AR()
     function onSessionStarted( session ) {
         session.addEventListener( 'end', onSessionEnded );
         three_renderer.xr.setSession( session );
-        ARButton.style.display = 'none';
-        ARButton.textContent = 'EXIT AR';
+        
         currentSession = session;
         session.requestReferenceSpace('local').then((refSpace) => {
             xrRefSpace = refSpace;
@@ -235,7 +340,6 @@ function AR()
     function onSessionEnded( /*event*/ ) {
         currentSession.removeEventListener( 'end', onSessionEnded );
         three_renderer.xr.setSession( null );
-        ARButton.textContent = 'ENTER AR' ;
         currentSession = null;
     }
 }
@@ -311,7 +415,7 @@ async function main()
 {
     const url = `./splats/zw1027_4.splat`;
     console.log("path: " + url)
-    splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene, (progress) => (updateLoadingProgress(Math.round(progress * 100))));
+    splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
 
     const frame = () => {
         splat_renderer.render(splat_scene, splat_camera);
@@ -319,6 +423,7 @@ async function main()
         
         if(first_frame_splat) {
             first_frame_splat = false;
+            showExplanationWindow();
             loaderOverlay.style.display = 'none';
         }
     };
@@ -328,12 +433,9 @@ async function main()
 
 
 init();
+initExplanationController();
 main();
 
 window.addEventListener("resize", onWindowResize)
-ARButton.addEventListener( 'click',function (event) {
-    event.stopPropagation();
-    AR();
-})
 diminish_button_scene.addEventListener( 'click', x => DiminishScene() )
 diminish_button_frustum.addEventListener( 'click', x => DiminishFrustum() )
