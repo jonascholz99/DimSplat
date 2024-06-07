@@ -1,5 +1,6 @@
 import * as SPLAT from '@jonascholz/gaussian-splatting'
 import * as THREE from 'three'
+import scene from "three/addons/offscreen/scene.js";
 
 /*
  * =================================================================================================
@@ -19,6 +20,7 @@ const DRState = {
 let drState = DRState.INTRO;
 
 let canvas;
+let diminish_scene;
 let diminish_button_scene;
 let diminish_button_frustum;
 let splat_placed;
@@ -73,6 +75,8 @@ let splat_raycaster;
  *      and the SPLAT scene for displaying the Gaussian splats are initially configured."
  */
 function init() {
+    canvas = document.getElementById("canvas");
+    
     // three
     three_camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.01, 50 );
     three_scene = new THREE.Scene();
@@ -84,7 +88,7 @@ function init() {
     
     
     // gaussian splatting
-    splat_renderer = new SPLAT.WebGLRenderer();
+    splat_renderer = new SPLAT.WebGLRenderer(canvas);
     splat_renderer.backgroundColor = new SPLAT.Color32(0, 0, 0, 0);
     splat_renderer.setSize(window.innerWidth, window.innerHeight);
     
@@ -97,11 +101,11 @@ function init() {
     splat_camera._position = new SPLAT.Vector3(0, -1.8, 0);
 
     splat_raycaster = new SPLAT.Raycaster(splat_renderer, false);
-
+    
     multifunctionalButton = document.getElementById("multifunctionalButton");
     multifunctionalButton.addEventListener('click', handleMultifunctionalButtonClick);
-    canvas = document.getElementById('diminish-scene');
-    canvas.appendChild( three_renderer.domElement );
+    diminish_scene = document.getElementById('diminish-scene');
+    diminish_scene.appendChild( three_renderer.domElement );
     diminish_button_scene = document.getElementById("diminish-scene-button")
     diminish_button_frustum = document.getElementById("diminish-frustum-button")
     
@@ -324,10 +328,13 @@ function drawRing(posX, posY, ringNumber) {
 }
 
 function addTouchPoint(touchPoints, number, event) {
-    console.log("Add touch point")
+    console.log("event.clientX: " + event.clientX)
+    console.log("canvas.clientWidth: " + canvas.clientWidth)
+    
     let x = (event.clientX / canvas.clientWidth) * 2 - 1;
     let y = -(event.clientY / canvas.clientHeight) * 2 + 1;
 
+    console.log("x: " + x)
     touchPoints.push({ x, y });
 
     drawRing(x, y, number);
