@@ -598,7 +598,7 @@ function onXRFrame(t, frame) {
  */
 async function main()
 {
-    const url = `./splats/zw1027_4.splat`;
+    const url = `./splats/edit_living_room.splat`;
     console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
 
