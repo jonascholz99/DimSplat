@@ -606,6 +606,9 @@ async function main()
 
         let originRenderProgram = new SPLAT.AxisProgram(splat_renderer, []);
         splat_renderer.addProgram(originRenderProgram);
+
+        let gridProgram = new SPLAT.GridProgram(splat_renderer, []);
+        splat_renderer.addProgram(gridProgram);
         
         if(first_frame_splat) {
             first_frame_splat = false;
