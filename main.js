@@ -21,6 +21,8 @@ let three_camera_setup_position;
 let three_camera_setup_rotation;
 
 let first_frame;
+let first_frame_splat;
+let loaderOverlay;
 
 // AR variables
 let xrRefSpace;
@@ -83,12 +85,14 @@ function init() {
     diminish_button_scene = document.getElementById("diminish-scene")
     diminish_button_frustum = document.getElementById("diminish-frustum")
     floatingText = document.getElementById('floatingText');
+    loaderOverlay = document.getElementById('loader-overlay');
     splat_placed = false;
 
     three_camera_setup_position = new THREE.Vector3();
     three_camera_setup_rotation = new THREE.Quaternion();
 
     first_frame = true;
+    first_frame_splat = true;
     
     scale = 1;
     movement_scale = 2;
@@ -313,6 +317,11 @@ async function main()
     const frame = () => {
         splat_renderer.render(splat_scene, splat_camera);
         requestAnimationFrame(frame);
+        
+        if(first_frame_splat) {
+            first_frame_splat = false;
+            loaderOverlay.style.display = 'none';
+        }
     };
 
     requestAnimationFrame(frame);
