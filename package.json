@@ -13,7 +13,7 @@
     "vite-plugin-cross-origin-isolation": "^0.1.6"
   },
   "dependencies": {
-    "@jonascholz/gaussian-splatting": "^1.1.9",
+    "@jonascholz/gaussian-splatting": "^1.1.10",
     "three": "^0.164.1"
   }
 }
