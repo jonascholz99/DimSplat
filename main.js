@@ -41,6 +41,12 @@ let multifunctionalButtonFunction = ButtonFunction.NONE;
 
 // AR variables
 let xrRefSpace;
+let frustumCreationActive;
+
+let touchPoints1, touchPoints2;
+let frustum1, frustum2;
+
+let currentRing1, currentRing2;
 
 let scale;
 let movement_scale;
@@ -107,6 +113,15 @@ function init() {
 
     first_frame = true;
     first_frame_splat = true;
+
+    frustumCreationActive = false;
+    touchPoints1 = [];
+    touchPoints2 = [];
+    frustum1 = null;
+    frustum2 = null;
+
+    currentRing1 = null;
+    currentRing2 = null;
     
     scale = 1;
     movement_scale = 2;
@@ -252,6 +267,8 @@ function handleMultifunctionalButtonClick(event) {
         drState = DRState.PLACED;
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
         console.log("Mask 1");
+        frustumCreationActive = true;
+        addMouseListener();
     }
 
     multifunctionalButton.style.bottom = '-100px';
@@ -262,10 +279,11 @@ function DiminishScene() {
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.Rendered = 1;
     })
-    splat_object.updateRenderingOfSplats();
+    splat_object.applyRendering();
 }
 
 function DiminishFrustum() {
+    
     var selectedSplat = splat_raycaster.testCameraViewFrustum(splat_camera);
     if (selectedSplat !== null){
         console.log("found: " + selectedSplat.length)
@@ -276,12 +294,107 @@ function DiminishFrustum() {
     }
 }
 
+function addMouseListener() {
+    console.log("add mouse listener")
+    document.addEventListener('mouseup', handleMouseDown, true);
+}
+
+function drawRing(posX, posY, ringNumber) {
+    const x1 = ((posX + 1) / 2) * canvas.clientWidth;
+    const y1 = ((1 - posY) / 2) * canvas.clientHeight;
+
+    if (ringNumber === 1 && currentRing1) {
+        currentRing1.remove();
+    }
+    if (ringNumber === 2 && currentRing2) {
+        currentRing2.remove();
+    }
+
+    const ring = document.createElement('div');
+    ring.classList.add('ring');
+    ring.style.left = `${x1}px`;
+    ring.style.top = `${y1}px`;
+    document.body.appendChild(ring);
+
+    if (ringNumber === 1) {
+        currentRing1 = ring;
+    } else if (ringNumber === 2) {
+        currentRing2 = ring;
+    }
+}
+
+function addTouchPoint(touchPoints, number, event) {
+    console.log("Add touch point")
+    let x = (event.clientX / canvas.clientWidth) * 2 - 1;
+    let y = -(event.clientY / canvas.clientHeight) * 2 + 1;
+
+    touchPoints.push({ x, y });
+
+    drawRing(x, y, number);
+}
+
+function handleMouseDown(event) {
+    if (event.button === 0) {
+        console.log("handle Mouse down")
+        console.log("frustumCreationActive: " + frustumCreationActive)
+        if (frustumCreationActive && touchPoints1.length < 2) {
+            if(touchPoints1.length === 0) {
+                addTouchPoint(touchPoints1, 1, event);
+            } else {
+                addTouchPoint(touchPoints1, 2, event);
+            }
+
+            // if (touchPoints1.length === 2) {
+            //     frustum1 = createFrustumFromTouchPoints(touchPoints1);
+            //     console.log("First Frustum Created");
+            //
+            //     const floatingButton = document.getElementById('floatingButton');
+            //     floatingButton.textContent = "Erneut Maskieren";
+            //     floatingButton.style.bottom = '20px';
+            //     frustumCreationActive = false;
+            //
+            //     setTimeout(function() {
+            //         hideScreenDrawings();
+            //     }, 2000);
+            // }
+        } 
+        // else if (frustumCreationActive && touchPoints2.length < 2) {
+        //     if(touchPoints2.length == 0) {
+        //         addTouchPoint(touchPoints2, 1, event);
+        //     } else {
+        //         addTouchPoint(touchPoints2, 2, event);
+        //     }
+        //
+        //     if (touchPoints2.length === 2) {
+        //         frustum2 = createFrustumFromTouchPoints(touchPoints2);
+        //         console.log("Second Frustum Created");
+        //
+        //         const floatingButton = document.getElementById('floatingButton');
+        //         floatingButton.textContent = "Diminish";
+        //         floatingButton.style.bottom = '20px';
+        //
+        //         if (frustum1 && frustum2) {
+        //             const intersectionPoints = frustum1.intersectFrustum(frustum2);
+        //             drawIntersectionVolume(intersectionPoints);
+        //         }
+        //     }
+        // }
+    }
+}
+
 function OnScenePlaced() {
     console.log('Bildschirm wurde berührt oder geklickt!');
 
     // show diminish buttons
     diminish_button_scene.style.display = 'block';
     diminish_button_frustum.style.display = 'block';
+    
+    // show button to start masking
+    setTimeout(() => {
+        multifunctionalButtonFunction = ButtonFunction.MASK1;
+        multifunctionalButton.textContent = "Objekt Markieren";
+        multifunctionalButton.style.bottom = '30px';
+    }, 1000)
     
     // document.removeEventListener('touchstart', handleTouchOrClick);
     // document.removeEventListener('click', handleTouchOrClick);
