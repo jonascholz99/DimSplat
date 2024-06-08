@@ -623,10 +623,16 @@ function getXRSessionInit(mode, options) {
     
 }
 
+let frameCounter = 0;
+const updateInterval = 15;
+
 function onXRFrame(t, frame) {
 
     const session = frame.session;
-    
+
+    if(cullByCube && frameCounter % updateInterval === 0) {
+        updateBoxFrustum()
+    }
     // const referenceSpace = three_renderer.xr.getReferenceSpace();
     //
     // const baseLayer = session.renderState.baseLayer;
@@ -654,7 +660,8 @@ function onXRFrame(t, frame) {
         first_frame = false;
         console.log("firstFrame");
     }
-
+    
+    frameCounter++;
     session.requestAnimationFrame(onXRFrame);
 }
 
