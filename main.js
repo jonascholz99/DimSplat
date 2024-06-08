@@ -351,8 +351,6 @@ function drawRing(posX, posY, ringNumber) {
 }
 
 function addTouchPoint(touchPoints, number, event) {
-    console.log("event.clientX: " + event.clientX)
-    console.log("canvas.clientWidth: " + canvas.clientWidth)
     
     let x = (event.clientX / canvas.clientWidth) * 2 - 1;
     let y = -(event.clientY / canvas.clientHeight) * 2 + 1;
@@ -453,6 +451,7 @@ function drawIntersectionVolume(box) {
 }
 
 function updateBoxFrustum() {
+    console.log("Test")
     screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
     // cullByCube = false;     
 
@@ -627,7 +626,7 @@ let frameCounter = 0;
 const updateInterval = 15;
 
 function onXRFrame(t, frame) {
-
+    console.log("XRFrame")
     const session = frame.session;
 
     if(cullByCube && frameCounter % updateInterval === 0) {
@@ -677,7 +676,7 @@ function onXRFrame(t, frame) {
 
 async function main()
 {
-    const url = `./splats/edit_living_room.splat`;
+    const url = `./splats/edit_zw1027_4.splat`;
     console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
 
