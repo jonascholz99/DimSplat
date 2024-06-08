@@ -354,8 +354,7 @@ function addTouchPoint(touchPoints, number, event) {
     
     let x = (event.clientX / canvas.clientWidth) * 2 - 1;
     let y = -(event.clientY / canvas.clientHeight) * 2 + 1;
-
-    console.log("x: " + x)
+    
     touchPoints.push({ x, y });
 
     drawRing(x, y, number);
@@ -439,8 +438,7 @@ function handleMouseDown(event) {
 
 function drawIntersectionVolume(box) {
     // box.drawBox(splat_renderer);
-
-    console.log(box);
+    
     
     multifunctionalButtonFunction = ButtonFunction.DIMINISH;
     multifunctionalButton.textContent = "Diminish";
@@ -451,7 +449,6 @@ function drawIntersectionVolume(box) {
 }
 
 function updateBoxFrustum() {
-    console.log("Test")
     screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
     // cullByCube = false;     
 
@@ -497,8 +494,6 @@ function updateBoxFrustum() {
 }
 
 function OnScenePlaced() {
-    console.log('Bildschirm wurde berührt oder geklickt!');
-
     // show diminish buttons
     diminish_button_scene.style.display = 'block';
     diminish_button_frustum.style.display = 'block';
@@ -526,7 +521,7 @@ function OnScenePlaced() {
     
     three_camera_setup_position = three_camera.position.clone();
     three_camera_setup_rotation = three_camera.quaternion.clone();
-    console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
+    // console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
     splat_placed = true;
 }
 
@@ -623,10 +618,10 @@ function getXRSessionInit(mode, options) {
 }
 
 let frameCounter = 0;
-const updateInterval = 15;
+const updateInterval = 5;
 
 function onXRFrame(t, frame) {
-    console.log("XRFrame")
+    if(!should_render_XR_loop) return;
     const session = frame.session;
 
     if(cullByCube && frameCounter % updateInterval === 0) {
@@ -686,7 +681,6 @@ async function main()
     const frame = () => {
         if(!should_render_start_loop) return;
         
-        console.log("render!")
         splat_renderer.render(splat_scene, splat_camera);
         requestAnimationFrame(frame);
 
