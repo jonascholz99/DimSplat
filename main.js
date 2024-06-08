@@ -10,6 +10,10 @@ import * as THREE from 'three'
  *      that control the application behavior throughout its runtime.
  */
 
+// control the rendering loops
+let should_render_start_loop;
+let should_render_XR_loop;
+
 // general variables
 const DRState = {
     INTRO: 'intro',
@@ -83,6 +87,9 @@ let splat_raycaster;
  */
 function init() {
     canvas = document.getElementById("canvas");
+
+    should_render_start_loop = true;
+    should_render_XR_loop = true;
     
     // three
     three_camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.01, 50 );
@@ -273,6 +280,7 @@ function onWindowResize() {
 function handleMultifunctionalButtonClick(event) {
     event.stopPropagation();
     if(multifunctionalButtonFunction === ButtonFunction.AR) {
+        should_render_start_loop = false;
         AR();
         drState = DRState.ENTERED;
         setExplanationIndex(1);
@@ -618,13 +626,15 @@ function getXRSessionInit(mode, options) {
 function onXRFrame(t, frame) {
 
     const session = frame.session;
-    session.requestAnimationFrame(onXRFrame);
-    const referenceSpace = three_renderer.xr.getReferenceSpace();
-
-    const baseLayer = session.renderState.baseLayer;
-    const pose = frame.getViewerPose(xrRefSpace);
+    
+    // const referenceSpace = three_renderer.xr.getReferenceSpace();
+    //
+    // const baseLayer = session.renderState.baseLayer;
+    // const pose = frame.getViewerPose(xrRefSpace);
     
     three_renderer.render( three_scene, three_camera );
+    splat_renderer.render(splat_scene, splat_camera);
+    
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
         let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_rotation.clone().invert());
@@ -644,6 +654,8 @@ function onXRFrame(t, frame) {
         first_frame = false;
         console.log("firstFrame");
     }
+
+    session.requestAnimationFrame(onXRFrame);
 }
 
 
@@ -666,6 +678,9 @@ async function main()
     const updateInterval = 15;
     
     const frame = () => {
+        if(!should_render_start_loop) return;
+        
+        console.log("render!")
         splat_renderer.render(splat_scene, splat_camera);
         requestAnimationFrame(frame);
 
