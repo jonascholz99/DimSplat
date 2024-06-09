@@ -45,7 +45,11 @@ const ButtonFunction = {
     DIMINISH: 'diminish',
     REMASK: 'remask'
 }
+
+let buttonWrapper;
 let multifunctionalButton;
+let helpButton;
+let replaceButton;
 let multifunctionalButtonFunction = ButtonFunction.NONE;
 
 let boxObject;
@@ -118,6 +122,15 @@ function init() {
     splat_camera._position = new SPLAT.Vector3(0, -1.8, 0);
 
     splat_raycaster = new SPLAT.Raycaster(splat_renderer, false);
+
+    buttonWrapper = document.getElementById('buttonWrapper');
+    
+    replaceButton = document.getElementById("replaceButton");
+    replaceButton.addEventListener('click', handleReplaceButtonClick);
+    hideReplaceButton();
+    
+    helpButton = document.getElementById("help-button");
+    helpButton.addEventListener('click', handleHelpButtonClick);
     
     multifunctionalButton = document.getElementById("multifunctionalButton");
     multifunctionalButton.addEventListener('click', handleMultifunctionalButtonClick);
@@ -217,25 +230,44 @@ function handleExplanationButtonClicked(event) {
     if(drState === DRState.INTRO) {
         if(currentExplanationIndex === 0) {
             hideExplanationWindow();
+            
             multifunctionalButtonFunction = ButtonFunction.AR;
             UpdateMultifunctionalButtonState();
+
+            showHelpButton();
             return;
         }
     } else if (drState === DRState.ENTERED) {
         if(currentExplanationIndex === 3) {
             hideExplanationWindow();
+            
             multifunctionalButtonFunction = ButtonFunction.SCENE;
             UpdateMultifunctionalButtonState();
+
+            showHelpButton();
+            
             return;
         }
     } else if(drState === DRState.PLACED) {
-        
-    }
+        if(currentExplanationIndex === 4) {
+            hideExplanationWindow();
+            
+            console.log("Hier")
+            multifunctionalButtonFunction = ButtonFunction.MASK1;
+            UpdateMultifunctionalButtonState();
+
+            showHelpButton();
+            
+            return;
+        }
+    } 
     
     nextExplanation();
 }
 
 function showExplanationWindow() {
+    hideHelpButton();
+    
     explanationCanvas.style.display = 'inline';
     videoElement.load();
 }
@@ -276,6 +308,73 @@ function nextExplanation() {
  *      In this section, utility functions that support the main functionality of the program are 
  *      defined and maintained.
  */
+
+function showReplaceButton() {
+    replaceButton.style.display = 'block';
+}
+
+function hideReplaceButton() {
+    replaceButton.style.display = 'none';
+}
+
+function handleReplaceButtonClick() {
+    AR();
+    drState = DRState.ENTERED;
+    setExplanationIndex(1);
+
+    cullByCube = false;
+    boxObject = null;
+
+    touchPoints1 = [];
+    touchPoints2 = [];
+    frustum1 = null;
+    frustum2 = null;
+    frustumCreationActive = false;
+    
+    multifunctionalButtonFunction = ButtonFunction.NONE;
+    UpdateMultifunctionalButtonState();
+    
+    hideReplaceButton();
+
+    setTimeout(() => {
+        multifunctionalButtonFunction = ButtonFunction.SCENE;
+        UpdateMultifunctionalButtonState();
+        
+        showHelpButton();
+        
+    }, 600);
+}
+function showHelpButton() {
+    helpButton.style.right = '10px';
+}
+
+function hideHelpButton() {
+    helpButton.style.right = '-60px';
+}
+
+function handleHelpButtonClick() {
+    if(currentExplanationIndex === 3) {
+        setExplanationIndex(1);
+    }
+
+    if(currentExplanationIndex === 4) {
+        cullByCube = false;
+        boxObject = null;
+
+        touchPoints1 = [];
+        touchPoints2 = [];
+        frustum1 = null;
+        frustum2 = null;
+        frustumCreationActive = false;
+    }
+    
+    showExplanationWindow();
+    hideHelpButton();
+
+    multifunctionalButtonFunction = ButtonFunction.NONE;
+    UpdateMultifunctionalButtonState();
+}
+
 function onWindowResize() {
     splat_renderer.setSize(window.innerWidth, window.innerHeight);
     splat_renderer.setSize(window.innerWidth, window.innerHeight);
@@ -284,24 +383,25 @@ function onWindowResize() {
 function UpdateMultifunctionalButtonState() {
     if(multifunctionalButtonFunction === ButtonFunction.AR) {
         multifunctionalButton.textContent = "Enter AR";
-        multifunctionalButton.style.bottom = '30px';
+        buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
         multifunctionalButton.textContent = "Szene Platzieren";
-        multifunctionalButton.style.bottom = '30px';
+        buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
         multifunctionalButton.textContent = "Objekt Markieren";
-        multifunctionalButton.style.bottom = '30px';
+        console.log("Show markieren button")
+        buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
         multifunctionalButton.textContent = "Erneut Markieren";
-        multifunctionalButton.style.bottom = '30px';
+        buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
         multifunctionalButton.textContent = "Diminish";
-        multifunctionalButton.style.bottom = '30px';
+        buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.REMASK) {
         multifunctionalButton.textContent = "Neu Maskieren";
-        multifunctionalButton.style.bottom = '30px';
+        buttonWrapper.classList.add('visible');
     } else {
-        multifunctionalButton.style.bottom = '-100px';
+        buttonWrapper.classList.remove('visible');
         setTimeout(() => {
             multifunctionalButton.textContent = "NONE"
         }, 500);
@@ -318,20 +418,25 @@ function handleMultifunctionalButtonClick(event) {
         showExplanationWindow();
     } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
         OnScenePlaced();
+
+        showReplaceButton();
         drState = DRState.PLACED;
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
-        console.log("Mask 1");
+        hideReplaceButton();
         frustumCreationActive = true;
         addMouseListener();
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
-        console.log("Mask 2");
         frustumCreationActive = true;
     } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
         cullByCube = true;
+        
+        hideHelpButton();
 
         setTimeout(() => {
             multifunctionalButtonFunction = ButtonFunction.REMASK;
             UpdateMultifunctionalButtonState();
+            
+            showReplaceButton();
         }, 2000);
         
     } else if(multifunctionalButtonFunction === ButtonFunction.REMASK) {
@@ -343,6 +448,10 @@ function handleMultifunctionalButtonClick(event) {
         frustum1 = null;
         frustum2 = null;
         frustumCreationActive = false;
+
+        showHelpButton();
+        
+        hideReplaceButton();
 
         splat_object.splats.forEach(async singleSplat => {
             singleSplat.Rendered = 0;
@@ -476,13 +585,15 @@ function handleMouseDown(event) {
 function drawIntersectionVolume(box) {
     // box.drawBox(splat_renderer);
     
-    
     multifunctionalButtonFunction = ButtonFunction.DIMINISH;
     UpdateMultifunctionalButtonState();
 
     boxObject = box;
     hideScreenDrawings();
 }
+
+let nearTopLeft, nearBottomRight, nearTopRight, nearBottomLeft;
+let farTopLeft, farTopRight, farBottomLeft, farBottomRight;
 
 function updateBoxFrustum() {
     console.time("update")
@@ -504,15 +615,15 @@ function updateBoxFrustum() {
     console.timeEnd("minMax")
 
     console.time("createFrustum")
-    let nearTopLeft = splat_camera.screenToWorldPoint(minX, maxY);
-    let nearBottomRight = splat_camera.screenToWorldPoint(maxX, minY);
-    let nearTopRight = splat_camera.screenToWorldPoint(maxX, maxY);
-    let nearBottomLeft = splat_camera.screenToWorldPoint(minX, minY);
+    nearTopLeft = splat_camera.screenToWorldPoint(minX, maxY);
+    nearBottomRight = splat_camera.screenToWorldPoint(maxX, minY);
+    nearTopRight = splat_camera.screenToWorldPoint(maxX, maxY);
+    nearBottomLeft = splat_camera.screenToWorldPoint(minX, minY);
 
-    let farTopLeft = nearTopLeft.add(splat_camera.screenPointToRay(minX, maxY).multiply(splat_camera.data.far));
-    let farTopRight = nearTopRight.add(splat_camera.screenPointToRay(maxX, maxY).multiply(splat_camera.data.far));
-    let farBottomLeft = nearBottomLeft.add(splat_camera.screenPointToRay(minX, minY).multiply(splat_camera.data.far));
-    let farBottomRight = nearBottomRight.add(splat_camera.screenPointToRay(maxX, minY).multiply(splat_camera.data.far));
+    farTopLeft = nearTopLeft.add(splat_camera.screenPointToRay(minX, maxY).multiply(splat_camera.data.far));
+    farTopRight = nearTopRight.add(splat_camera.screenPointToRay(maxX, maxY).multiply(splat_camera.data.far));
+    farBottomLeft = nearBottomLeft.add(splat_camera.screenPointToRay(minX, minY).multiply(splat_camera.data.far));
+    farBottomRight = nearBottomRight.add(splat_camera.screenPointToRay(maxX, minY).multiply(splat_camera.data.far));
 
     // boxFrustum.ereaseFrustum(renderer);
     boxFrustum.setFromPoints(nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight, farTopLeft, farTopRight,farBottomLeft, farBottomRight);
@@ -554,15 +665,10 @@ function updateBoxFrustum() {
 }
 
 function OnScenePlaced() {
-    // show button to start masking
-    setTimeout(() => {
-        multifunctionalButtonFunction = ButtonFunction.MASK1;
-        UpdateMultifunctionalButtonState();
-        
-    }, 1000)
+    // show tutorial
+    setExplanationIndex(4);
+    showExplanationWindow();
     
-    // document.removeEventListener('touchstart', handleTouchOrClick);
-    // document.removeEventListener('click', handleTouchOrClick);
 
     // set transparency back to normal
     splat_object.splats.forEach(async singleSplat => {

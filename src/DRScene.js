@@ -16,7 +16,12 @@ export const DRSceneHTML = `
         <div id="loading-text">Loading data and creating splat scene...</div>
         <ul id="completed-sections"></ul>
     </div>
+    
+    <button id="help-button">?</button>
         
-    <button class="multifunctional-button" id="multifunctionalButton">Floating Button</button>      
+    <div class="button-wrapper" id="buttonWrapper">
+        <button class="multifunctional-button" id="multifunctionalButton">Floating Button</button>
+        <button class="multifunctional-button" id="replaceButton">Replace</button>
+    </div>
 </div>
 `;
