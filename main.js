@@ -486,9 +486,12 @@ function drawIntersectionVolume(box) {
 
 function updateBoxFrustum() {
     console.time("update")
+    console.time("getCorners")
     screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
     // cullByCube = false;     
+    console.timeEnd("getCorners")
 
+    console.time("minMax")
     let minX = Infinity, minY = Infinity;
     let maxX = -Infinity, maxY = -Infinity;
 
@@ -498,7 +501,9 @@ function updateBoxFrustum() {
         maxX = Math.max(maxX, point.x);
         maxY = Math.max(maxY, point.y);
     }
+    console.timeEnd("minMax")
 
+    console.time("createFrustum")
     let nearTopLeft = splat_camera.screenToWorldPoint(minX, maxY);
     let nearBottomRight = splat_camera.screenToWorldPoint(maxX, minY);
     let nearTopRight = splat_camera.screenToWorldPoint(maxX, maxY);
@@ -513,7 +518,13 @@ function updateBoxFrustum() {
     boxFrustum.setFromPoints(nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight, farTopLeft, farTopRight,farBottomLeft, farBottomRight);
     // boxFrustum.drawFrustum(renderer);    
 
+    console.timeEnd("createFrustum")
+
+    console.time("calculate iterator")
     const iterator = new SPLAT.OctreeIterator(splat_object._octree.root, boxFrustum);
+    console.timeEnd("calculate iterator")
+
+    console.time("Set SingleSplats")
     splat_object.data.resetRendering();
 
     for (let node of iterator) {
@@ -533,7 +544,7 @@ function updateBoxFrustum() {
         }
     }
     splat_object.applyRendering();
-
+    console.timeEnd("Set SingleSplats")
     console.timeEnd("update")
 }
 
