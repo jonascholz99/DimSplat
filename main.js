@@ -140,7 +140,7 @@ function init() {
     frustum1 = null;
     frustum2 = null;
 
-    transparency_threshold = 2.5;
+    transparency_threshold = 0.5;
     
     boxObject = null;
     boxFrustum = new SPLAT.Frustum();
@@ -530,19 +530,24 @@ function updateBoxFrustum() {
     for (let node of iterator) {
         const nodeData = node.data;
         if (nodeData && nodeData.data) {
-            for(let singleSplat of nodeData.data) {
-                if(boxFrustum.containsBox(singleSplat.bounds)) {
+            const nodeDataArray = nodeData.data; // Cache die Array-Referenz
+
+            for (let i = 0, len = nodeDataArray.length; i < len; i++) {
+                const singleSplat = nodeDataArray[i];
+
+                if (boxFrustum.containsBox(singleSplat.bounds)) {
                     singleSplat.Rendered = 1;
 
                     const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
                     const transparency = Math.min(distance / transparency_threshold, 1.0);
-                    singleSplat.setTransparency(transparency);
 
+                    singleSplat.setTransparency(transparency);
                     singleSplat.setBlending(1);
                 }
             }
         }
     }
+    
     splat_object.applyRendering();
     console.timeEnd("Set SingleSplats")
     console.timeEnd("update")
