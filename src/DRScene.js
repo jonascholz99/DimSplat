@@ -17,11 +17,6 @@ export const DRSceneHTML = `
         <ul id="completed-sections"></ul>
     </div>
         
-    <button class="multifunctional-button" id="multifunctionalButton">Floating Button</button>     
-
-    <button id="diminish-scene-button"><img src="./icons/home.svg" alt="Icon"></button>
-    <button id="diminish-frustum-button"><img src="./icons/camera.svg" alt="Icon"></button>       
-
-    <div id="floatingText">Please position the transparent representation of the <br> room as precisely as possible over the real one. <br><br> Tab screen to place</div>       
+    <button class="multifunctional-button" id="multifunctionalButton">Floating Button</button>      
 </div>
 `;

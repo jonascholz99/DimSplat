@@ -24,8 +24,7 @@ let drState = DRState.INTRO;
 
 let canvas;
 let diminish_scene;
-let diminish_button_scene;
-let diminish_button_frustum;
+
 let splat_placed;
 
 let three_camera_setup_position;
@@ -43,7 +42,8 @@ const ButtonFunction = {
     SCENE: 'scene',
     MASK1: 'mask1',
     MASK2: 'mask2',
-    DIMINISH: 'diminish'
+    DIMINISH: 'diminish',
+    REMASK: 'remask'
 }
 let multifunctionalButton;
 let multifunctionalButtonFunction = ButtonFunction.NONE;
@@ -60,6 +60,8 @@ let touchPoints1, touchPoints2;
 let frustum1, frustum2;
 
 let currentRing1, currentRing2;
+
+let transparency_threshold;
 
 let scale;
 let movement_scale;
@@ -120,8 +122,6 @@ function init() {
     multifunctionalButton.addEventListener('click', handleMultifunctionalButtonClick);
     diminish_scene = document.getElementById('diminish-scene');
     diminish_scene.appendChild( three_renderer.domElement );
-    diminish_button_scene = document.getElementById("diminish-scene-button")
-    diminish_button_frustum = document.getElementById("diminish-frustum-button")
     
     loaderOverlay = document.getElementById('loader-overlay');
     splat_placed = false;
@@ -139,6 +139,8 @@ function init() {
     frustum1 = null;
     frustum2 = null;
 
+    transparency_threshold = 2.5;
+    
     boxObject = null;
     boxFrustum = new SPLAT.Frustum();
     
@@ -204,6 +206,7 @@ function initExplanationController() {
     
     // set start values
     videoSource.src = videos[currentExplanationIndex].url;
+    videoElement.load();
     textElement.innerHTML = `<p>${videos[currentExplanationIndex].text}</p>`;
 }
 
@@ -212,16 +215,14 @@ function handleExplanationButtonClicked(event) {
         if(currentExplanationIndex === 0) {
             hideExplanationWindow();
             multifunctionalButtonFunction = ButtonFunction.AR;
-            multifunctionalButton.textContent = "Enter AR";
-            multifunctionalButton.style.bottom = '30px';
+            UpdateMultifunctionalButtonState();
             return;
         }
     } else if (drState === DRState.ENTERED) {
         if(currentExplanationIndex === 3) {
             hideExplanationWindow();
             multifunctionalButtonFunction = ButtonFunction.SCENE;
-            multifunctionalButton.textContent = "Szene Platzieren";
-            multifunctionalButton.style.bottom = '30px';
+            UpdateMultifunctionalButtonState();
             return;
         }
     } else if(drState === DRState.PLACED) {
@@ -277,6 +278,33 @@ function onWindowResize() {
     splat_renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+function UpdateMultifunctionalButtonState() {
+    if(multifunctionalButtonFunction === ButtonFunction.AR) {
+        multifunctionalButton.textContent = "Enter AR";
+        multifunctionalButton.style.bottom = '30px';
+    } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
+        multifunctionalButton.textContent = "Szene Platzieren";
+        multifunctionalButton.style.bottom = '30px';
+    } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
+        multifunctionalButton.textContent = "Objekt Markieren";
+        multifunctionalButton.style.bottom = '30px';
+    } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
+        multifunctionalButton.textContent = "Erneut Markieren";
+        multifunctionalButton.style.bottom = '30px';
+    } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
+        multifunctionalButton.textContent = "Diminish";
+        multifunctionalButton.style.bottom = '30px';
+    } else if(multifunctionalButtonFunction === ButtonFunction.REMASK) {
+        multifunctionalButton.textContent = "Neu Maskieren";
+        multifunctionalButton.style.bottom = '30px';
+    } else {
+        multifunctionalButton.style.bottom = '-100px';
+        setTimeout(() => {
+            multifunctionalButton.textContent = "NONE"
+        }, 500);
+    }
+}
+
 function handleMultifunctionalButtonClick(event) {
     event.stopPropagation();
     if(multifunctionalButtonFunction === ButtonFunction.AR) {
@@ -297,11 +325,35 @@ function handleMultifunctionalButtonClick(event) {
         frustumCreationActive = true;
     } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
         cullByCube = true;
-    }
 
-    multifunctionalButton.style.bottom = '-100px';
-    multifunctionalButton.textContent = "NONE"
+        setTimeout(() => {
+            multifunctionalButtonFunction = ButtonFunction.REMASK;
+            UpdateMultifunctionalButtonState();
+        }, 2000);
+        
+    } else if(multifunctionalButtonFunction === ButtonFunction.REMASK) {
+        cullByCube = false;
+        boxObject = null;
+
+        touchPoints1 = [];
+        touchPoints2 = [];
+        frustum1 = null;
+        frustum2 = null;
+        frustumCreationActive = false;
+
+        splat_object.splats.forEach(async singleSplat => {
+            singleSplat.Rendered = 1;
+        })
+        splat_object.applyRendering();
+
+        setTimeout(() => {
+            multifunctionalButtonFunction = ButtonFunction.MASK1;
+            UpdateMultifunctionalButtonState();
+        }, 600);
+    }
+    
     multifunctionalButtonFunction = ButtonFunction.NONE;
+    UpdateMultifunctionalButtonState();
 }
 function DiminishScene() {
     splat_object.splats.forEach(async singleSplat => {
@@ -405,8 +457,8 @@ function handleMouseDown(event) {
                 console.log("First Frustum Created");
 
                 multifunctionalButtonFunction = ButtonFunction.MASK2;
-                multifunctionalButton.textContent = "Erneut Markieren";
-                multifunctionalButton.style.bottom = '30px';
+                UpdateMultifunctionalButtonState();
+                
                 frustumCreationActive = false;
 
                 setTimeout(function() {
@@ -441,8 +493,7 @@ function drawIntersectionVolume(box) {
     
     
     multifunctionalButtonFunction = ButtonFunction.DIMINISH;
-    multifunctionalButton.textContent = "Diminish";
-    multifunctionalButton.style.bottom = '30px';
+    UpdateMultifunctionalButtonState();
 
     boxObject = box;
     hideScreenDrawings();
@@ -485,7 +536,16 @@ function updateBoxFrustum() {
         if (nodeData && nodeData.data) {
             for(let singleSplat of nodeData.data) {
                 if(boxFrustum.containsBox(singleSplat.bounds)) {
+                    const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
                     singleSplat.Rendered = 1;
+
+                    if (distance < transparency_threshold) {
+                        singleSplat.setTransparency(distance / transparency_threshold);
+                    } else {
+                        singleSplat.setTransparency(1.0);
+                    }
+
+                    singleSplat.setBlending(1);
                 }
             }
         }
@@ -494,15 +554,11 @@ function updateBoxFrustum() {
 }
 
 function OnScenePlaced() {
-    // show diminish buttons
-    diminish_button_scene.style.display = 'block';
-    diminish_button_frustum.style.display = 'block';
-    
     // show button to start masking
     setTimeout(() => {
         multifunctionalButtonFunction = ButtonFunction.MASK1;
-        multifunctionalButton.textContent = "Objekt Markieren";
-        multifunctionalButton.style.bottom = '30px';
+        UpdateMultifunctionalButtonState();
+        
     }, 1000)
     
     // document.removeEventListener('touchstart', handleTouchOrClick);
@@ -632,9 +688,6 @@ function onXRFrame(t, frame) {
     // const baseLayer = session.renderState.baseLayer;
     // const pose = frame.getViewerPose(xrRefSpace);
     
-    three_renderer.render( three_scene, three_camera );
-    splat_renderer.render(splat_scene, splat_camera);
-    
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
         let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_rotation.clone().invert());
@@ -649,6 +702,9 @@ function onXRFrame(t, frame) {
         splat_camera._rotation.z = -three_camera.quaternion.z;
         splat_camera._rotation.w = three_camera.quaternion.w;
     }
+
+    three_renderer.render( three_scene, three_camera );
+    splat_renderer.render( splat_scene, splat_camera );
 
     if(first_frame) {
         first_frame = false;
@@ -707,5 +763,3 @@ initExplanationController();
 main();
 
 window.addEventListener("resize", onWindowResize)
-diminish_button_scene.addEventListener( 'click', x => DiminishScene() )
-diminish_button_frustum.addEventListener( 'click', x => DiminishFrustum() )
