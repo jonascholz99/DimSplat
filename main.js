@@ -53,6 +53,7 @@ let boxFrustum;
 
 // AR variables
 let xrRefSpace;
+let currentSession;
 let frustumCreationActive;
 
 let screenPoints;
@@ -151,6 +152,8 @@ function init() {
     movement_scale = 2;
     initial_z = 0;
     initial_y = 1.8*2; //-15
+
+    currentSession = null;
 }
 
 /*
@@ -342,7 +345,7 @@ function handleMultifunctionalButtonClick(event) {
         frustumCreationActive = false;
 
         splat_object.splats.forEach(async singleSplat => {
-            singleSplat.Rendered = 1;
+            singleSplat.Rendered = 0;
         })
         splat_object.applyRendering();
 
@@ -354,24 +357,6 @@ function handleMultifunctionalButtonClick(event) {
     
     multifunctionalButtonFunction = ButtonFunction.NONE;
     UpdateMultifunctionalButtonState();
-}
-function DiminishScene() {
-    splat_object.splats.forEach(async singleSplat => {
-        singleSplat.Rendered = 1;
-    })
-    splat_object.applyRendering();
-}
-
-function DiminishFrustum() {
-    
-    var selectedSplat = splat_raycaster.testCameraViewFrustum(splat_camera);
-    if (selectedSplat !== null){
-        console.log("found: " + selectedSplat.length)
-        selectedSplat.forEach(singleSplat => {
-            singleSplat.Rendered = 1;
-        });
-        splat_object.updateRenderingOfSplats();
-    }
 }
 
 function addMouseListener() {
@@ -500,18 +485,18 @@ function drawIntersectionVolume(box) {
 }
 
 function updateBoxFrustum() {
+    console.time("update")
     screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
     // cullByCube = false;     
 
-    // 2. Finde die minimalen und maximalen x- und y-Werte
     let minX = Infinity, minY = Infinity;
     let maxX = -Infinity, maxY = -Infinity;
 
     for (const point of screenPoints) {
-        if (point.x < minX) minX = point.x;
-        if (point.x > maxX) maxX = point.x;
-        if (point.y < minY) minY = point.y;
-        if (point.y > maxY) maxY = point.y;
+        minX = Math.min(minX, point.x);
+        minY = Math.min(minY, point.y);
+        maxX = Math.max(maxX, point.x);
+        maxY = Math.max(maxY, point.y);
     }
 
     let nearTopLeft = splat_camera.screenToWorldPoint(minX, maxY);
@@ -536,14 +521,11 @@ function updateBoxFrustum() {
         if (nodeData && nodeData.data) {
             for(let singleSplat of nodeData.data) {
                 if(boxFrustum.containsBox(singleSplat.bounds)) {
-                    const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
                     singleSplat.Rendered = 1;
 
-                    if (distance < transparency_threshold) {
-                        singleSplat.setTransparency(distance / transparency_threshold);
-                    } else {
-                        singleSplat.setTransparency(1.0);
-                    }
+                    const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
+                    const transparency = Math.min(distance / transparency_threshold, 1.0);
+                    singleSplat.setTransparency(transparency);
 
                     singleSplat.setBlending(1);
                 }
@@ -551,6 +533,8 @@ function updateBoxFrustum() {
         }
     }
     splat_object.applyRendering();
+
+    console.timeEnd("update")
 }
 
 function OnScenePlaced() {
@@ -591,19 +575,14 @@ function OnScenePlaced() {
 function AR()
 {
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.Color = new Uint8Array([singleSplat.Color[0], singleSplat.Color[1], singleSplat.Color[2], 25]);
+        singleSplat.setTransparency(0.3)
     })
     splat_object.applyRendering();
-
-    // document.addEventListener('touchstart', handleTouchOrClick, { once: true });
-    // document.addEventListener('click', handleTouchOrClick, { once: true });
     
-    var currentSession = null;
-
     if( currentSession == null )
     {
         let options = {
-            requiredFeatures: ['dom-overlay', 'hit-test'],
+            requiredFeatures: ['dom-overlay'],
             domOverlay: { root: document.body },
         };
         var sessionInit = getXRSessionInit( 'immersive-ar', {
@@ -661,8 +640,6 @@ function getXRSessionInit(mode, options) {
     // If the user already specified the space as an optional or required feature, don't do anything.
     if ( sessionInit.optionalFeatures && sessionInit.optionalFeatures.includes(space) )
         return sessionInit;
-    if ( sessionInit.requiredFeatures && sessionInit.requiredFeatures.includes(space) )
-        return sessionInit;
 
     var newInit = Object.assign( {}, sessionInit );
     newInit.requiredFeatures = [ space ];
@@ -674,19 +651,15 @@ function getXRSessionInit(mode, options) {
 }
 
 let frameCounter = 0;
-const updateInterval = 5;
+const updateInterval = 15;
 
 function onXRFrame(t, frame) {
     if(!should_render_XR_loop) return;
     const session = frame.session;
 
     if(cullByCube && frameCounter % updateInterval === 0) {
-        updateBoxFrustum()
+        updateBoxFrustum();
     }
-    // const referenceSpace = three_renderer.xr.getReferenceSpace();
-    //
-    // const baseLayer = session.renderState.baseLayer;
-    // const pose = frame.getViewerPose(xrRefSpace);
     
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
@@ -730,22 +703,12 @@ async function main()
     const url = `./splats/edit_zw1027_4.splat`;
     console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
-
-    let frameCounter = 0;
-    const updateInterval = 15;
     
     const frame = () => {
         if(!should_render_start_loop) return;
         
         splat_renderer.render(splat_scene, splat_camera);
         requestAnimationFrame(frame);
-
-        // let originRenderProgram = new SPLAT.AxisProgram(splat_renderer, []);
-        // splat_renderer.addProgram(originRenderProgram);
-
-        if(cullByCube && frameCounter % updateInterval === 0) {
-            updateBoxFrustum()
-        }
         
         if(first_frame_splat) {
             first_frame_splat = false;
@@ -760,6 +723,7 @@ async function main()
 
 init();
 initExplanationController();
+
 main();
 
 window.addEventListener("resize", onWindowResize)
