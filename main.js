@@ -229,27 +229,27 @@ function initExplanationController() {
     videos  = [
         {
             url: "./videos/video_keep upright.mp4",
-            text: "Bitte achte darauf, dein Handy während dem platzieren immer aufrecht zu halten"
+            text: "Bitte halte dein Handy während des Platzierens stets aufrecht."
         },
         {
             url: "./videos/video_move.mp4",
-            text: "Bewege das Handy umher und versuche das transparente Bild möglichst Deckungsleich mit der realen Szene zu bringen. "
+            text: "Bewege das Handy und versuche, das transparente Bild so deckungsgleich wie möglich mit der realen Szene zu bringen."
         },
         {
             url: "./videos/video_back and forth.mp4",
-            text: "Bewge dich auch nach vorne und Hinten um die Position so gut es geht zu treffen."
+            text: "Bewege dich auch nach vorne und hinten, um die Position so gut es geht zu treffen."
         },
         {
             url: "./videos/video_place.mp4",
-            text: "Wenn du zufreiden bist, dann drücke den Button um die Szene zu platzieren. Das Erlebnis kann gleich starten"
+            text: "Wenn du zufrieden bist, drücke den Button, um die Szene zu platzieren."
         },
         {
             url: "./videos/video_placement control.mp4",
-            text: "Schaue dich um und überprüfe, ob die Szene gut platziert ist. Wenn du zufreiden bist, dann drücke auf Weiter, anosnten platziere die Szene neu."
+            text: "Schaue dich um und überprüfe, ob die Szene gut platziert ist. Wenn du zufrieden bist, drücke auf 'Weiter', ansonsten platziere die Szene neu. Das Erlebnis kann gleich starten."
         },
         {
             url: "./videos/video_select.mp4",
-            text: "Um nun gleich ein Objekt verschwinden zu lassen, müssen wir erstmal wissen wo es im Raum liegt. Schaue das Objekt dafür mit der Kamera an. Markiere es indem du zweimal auf den Bildschirm klickst. \n Gehe dann auf die Seite des Objekts und markiere es erneut"
+            text: "Um nun gleich ein Objekt verschwinden zu lassen, müssen wir zuerst wissen, wo es sich im Raum befindet. Schaue das Objekt mit der Kamera an und markiere es, indem du zweimal auf den Bildschirm tippst. \n\n Gehe dann auf die Seite des Objekts und markiere es erneut."
         }
     ];
     
