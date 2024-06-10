@@ -937,11 +937,6 @@ async function main()
     const url = `./splats/edit_zw1027_4.splat`;
     console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
-
-    splat_object.splats.forEach(singleSplat => {
-        singleSplat.setTransparency(0.15)
-    })
-    splat_object.applyRendering();
     
     const frame = () => {
         if(!should_render_start_loop) return;
@@ -953,6 +948,11 @@ async function main()
             first_frame_splat = false;
             showExplanationWindow();
             loaderOverlay.style.display = 'none';
+
+            splat_object.splats.forEach(singleSplat => {
+                singleSplat.setTransparency(0.15)
+            })
+            splat_object.applyRendering();
         }
     };
 
