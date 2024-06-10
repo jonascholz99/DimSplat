@@ -184,7 +184,7 @@ function init() {
     scale = 1;
     movement_scale = 2;
     initial_z = 0;
-    initial_y = 1.8; //-15
+    initial_y = 1.8 * 1.5; //-15
 
     currentSession = null;
 }
