@@ -24,6 +24,12 @@ export const DRSceneHTML = `
         <button class="multifunctional-button" id="replaceButton">Replace</button>
     </div>
     
+    <div class="slider-container" id="slider-container">
+        <input type="range" class="slider" id="blendSlider" min="0" max="1" value="1" step="0.01">
+    </div>
+
+
+        
     <!-- control panel -->        
     <div class="control-panel" id="control-panel">
         <h1>Control Panel</h1>

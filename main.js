@@ -59,6 +59,8 @@ let boxFrustum;
 let initialCenter;
 let initialSize;
 
+let blendSlider, sliderContainer;
+
 // AR variables
 let xrRefSpace;
 let currentSession;
@@ -71,6 +73,7 @@ let frustum1, frustum2;
 let currentRing1, currentRing2;
 
 let transparency_threshold;
+let blend_value;
 
 let scale;
 let movement_scale;
@@ -134,6 +137,10 @@ function init() {
     document.getElementById('x-scaling').oninput = function() { updateValue('x-scaling-value', this.value);};
     document.getElementById('y-scaling').oninput = function() { updateValue('y-scaling-value', this.value);};
     document.getElementById('z-scaling').oninput = function() { updateValue('z-scaling-value', this.value);};
+
+    sliderContainer = document.getElementById('slider-container'); 
+    blendSlider = document.getElementById('blendSlider');
+    blendSlider.addEventListener('input', onBlendSliderTouched);
     
     buttonWrapper = document.getElementById('buttonWrapper');
     
@@ -166,6 +173,7 @@ function init() {
     frustum2 = null;
 
     transparency_threshold = 0.5;
+    blend_value = 1;
     
     boxObject = null;
     boxFrustum = new SPLAT.Frustum();
@@ -321,6 +329,18 @@ function nextExplanation() {
  *      defined and maintained.
  */
 
+function showBlendSlider() {
+    sliderContainer.style.right = '10px';
+}
+
+function hideBlendSlider() {
+    sliderContainer.style.right = '-50px';
+}
+
+function onBlendSliderTouched() {
+    blend_value = blendSlider.value;
+}
+
 function ShowControlPanel() {
     document.getElementById("control-panel").classList.add('show');
 }
@@ -395,6 +415,7 @@ function handleReplaceButtonClick() {
     //    
     // }, 600);
 }
+
 function showHelpButton() {
     helpButton.style.right = '10px';
 }
@@ -484,12 +505,15 @@ function handleMultifunctionalButtonClick(event) {
     } else if(multifunctionalButtonFunction === ButtonFunction.TRANSFORM) {
         HideControlPanel();
         setTimeout(() => {
+            boxObject.ereaseBox(splat_renderer);
+            
             multifunctionalButtonFunction = ButtonFunction.DIMINISH;
             UpdateMultifunctionalButtonState();
-            
         }, 600);
     } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
         cullByCube = true;
+
+        showBlendSlider();
         
         hideHelpButton();
 
@@ -513,6 +537,7 @@ function handleMultifunctionalButtonClick(event) {
         showHelpButton();
         
         hideReplaceButton();
+        hideBlendSlider();
 
         splat_object.splats.forEach(async singleSplat => {
             singleSplat.Rendered = 0;
@@ -719,7 +744,7 @@ function updateBoxFrustum() {
                     const transparency = Math.min(distance / transparency_threshold, 1.0);
 
                     singleSplat.setTransparency(transparency);
-                    singleSplat.setBlending(1);
+                    singleSplat.setBlending(blend_value);
                 }
             }
         }
@@ -888,7 +913,7 @@ function onXRFrame(t, frame) {
 
 async function main()
 {
-    const url = `./splats/edit_zw1027_4.splat`;
+    const url = `./splats/edit_living_room.splat`;
     console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
     
