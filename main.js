@@ -799,6 +799,7 @@ function onSceneConfirmed() {
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.ResetColor();
     })
+    splat_object.applyRendering();
 
     // render none
     splat_object.splats.forEach(async singleSplat => {
