@@ -1,6 +1,6 @@
 import * as SPLAT from '@jonascholz/gaussian-splatting'
 import * as THREE from 'three'
-import Stats from "stats.js/src/Stats.js";
+import Stats from "./Stats.js"
 
 /*
  * =================================================================================================
@@ -528,6 +528,15 @@ function handleMultifunctionalButtonClick(event) {
         setTimeout(() => {
             multifunctionalButtonFunction = ButtonFunction.REMASK;
             UpdateMultifunctionalButtonState();
+
+            // Start collecting FPS data
+            stats.startCollectingFPS();
+
+            // Stop collecting FPS data and download it after 10 seconds
+            setTimeout(function() {
+                stats.stopCollectingFPS();
+                stats.downloadFPSData();
+            }, 60000);
             
             showReplaceButton();
         }, 2000);
