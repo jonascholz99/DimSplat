@@ -734,9 +734,14 @@ function updateBoxFrustum() {
 
     console.log("position: " + positionsAreClose(splat_camera.position, cameraPosition, tolerance));
     console.log("rotation: " +  rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance));
+    console.log(splat_camera.position)
+    console.log(cameraPosition)
     if (positionsAreClose(splat_camera.position, cameraPosition, tolerance) && rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance)) {
         return;
     }
+
+    cameraPosition = splat_camera.position.clone();
+    cameraRotation = splat_camera.rotation.clone();
     
     console.time("update")
     console.time("getCorners")
