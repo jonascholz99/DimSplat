@@ -952,7 +952,7 @@ async function main()
             splat_object.splats.forEach(singleSplat => {
                 singleSplat.setTransparency(0.15)
             })
-            splat_object.applyRendering();
+            // splat_object.applyRendering();
         }
     };
 
