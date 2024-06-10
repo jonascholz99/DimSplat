@@ -813,11 +813,6 @@ function OnScenePlaced() {
 
 function AR()
 {
-    // splat_object.splats.forEach(async singleSplat => {
-    //     singleSplat.setTransparency(0.15)
-    // })
-    // splat_object.applyRendering();
-    
     if( currentSession == null )
     {
         let options = {
@@ -921,6 +916,10 @@ function onXRFrame(t, frame) {
     if(first_frame) {
         first_frame = false;
         console.log("firstFrame");
+        splat_object.splats.forEach(async singleSplat => {
+            singleSplat.setTransparency(0.15)
+        })
+        splat_object.applyRendering();
     }
     
     frameCounter++;
