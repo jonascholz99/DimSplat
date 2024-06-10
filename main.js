@@ -18,6 +18,7 @@ let should_render_XR_loop;
 const DRState = {
     INTRO: 'intro',
     ENTERED: 'entered',
+    CONTROL: 'conttrol',
     PLACED: 'placed'
 }
 let drState = DRState.INTRO;
@@ -40,6 +41,7 @@ const ButtonFunction = {
     NONE: 'none',
     AR: 'ar',
     SCENE: 'scene',
+    PLACEMENT: 'placement',
     MASK1: 'mask1',
     MASK2: 'mask2',
     TRANSFORM: 'transform',
@@ -235,6 +237,10 @@ function initExplanationController() {
             text: "Wenn du zufreiden bist, dann drücke den Button um die Szene zu platzieren. Das Erlebnis kann gleich starten"
         },
         {
+            url: "./videos/video_placement control.mp4",
+            text: "Schaue dich um und überprüfe, ob die Szene gut platziert ist. Wenn du zufreiden bist, dann drücke auf Weiter, anosnten platziere die Szene neu."
+        },
+        {
             url: "./videos/video_select.mp4",
             text: "Um nun gleich ein Objekt verschwinden zu lassen, müssen wir erstmal wissen wo es im Raum liegt. Schaue das Objekt dafür mit der Kamera an. Markiere es indem du zweimal auf den Bildschirm klickst. \n Gehe dann auf die Seite des Objekts und markiere es erneut"
         }
@@ -268,20 +274,30 @@ function handleExplanationButtonClicked(event) {
             
             return;
         }
-    } else if(drState === DRState.PLACED) {
+    } else if(drState === DRState.CONTROL) {
         if(currentExplanationIndex === 4) {
             hideExplanationWindow();
             
-            console.log("Hier")
-            multifunctionalButtonFunction = ButtonFunction.MASK1;
+            multifunctionalButtonFunction = ButtonFunction.PLACEMENT;
             UpdateMultifunctionalButtonState();
 
             showHelpButton();
             
             return;
         }
-    } 
-    
+    } else if(drState === DRState.PLACED) {
+        if(currentExplanationIndex === 5) {
+            hideExplanationWindow();
+
+            multifunctionalButtonFunction = ButtonFunction.MASK1;
+            UpdateMultifunctionalButtonState();
+
+            showHelpButton();
+
+            return;
+        }
+    }
+
     nextExplanation();
 }
 
@@ -388,32 +404,6 @@ function hideReplaceButton() {
 
 function handleReplaceButtonClick() {
     location.reload()
-    
-    // AR();
-    // drState = DRState.ENTERED;
-    // setExplanationIndex(1);
-    //
-    // cullByCube = false;
-    // boxObject = null;
-    //
-    // touchPoints1 = [];
-    // touchPoints2 = [];
-    // frustum1 = null;
-    // frustum2 = null;
-    // frustumCreationActive = false;
-    //
-    // multifunctionalButtonFunction = ButtonFunction.NONE;
-    // UpdateMultifunctionalButtonState();
-    //
-    // hideReplaceButton();
-    //
-    // setTimeout(() => {
-    //     multifunctionalButtonFunction = ButtonFunction.SCENE;
-    //     UpdateMultifunctionalButtonState();
-    //    
-    //     showHelpButton();
-    //    
-    // }, 600);
 }
 
 function showHelpButton() {
@@ -459,6 +449,9 @@ function UpdateMultifunctionalButtonState() {
     } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
         multifunctionalButton.textContent = "Szene Platzieren";
         buttonWrapper.classList.add('visible');
+    } else if(multifunctionalButtonFunction === ButtonFunction.PLACEMENT) {
+        multifunctionalButton.textContent = "Weiter";
+        buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
         multifunctionalButton.textContent = "Objekt Markieren";
         console.log("Show markieren button")
@@ -492,12 +485,18 @@ function handleMultifunctionalButtonClick(event) {
         setExplanationIndex(1);
         showExplanationWindow();
     } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
-        OnScenePlaced();
-
         showReplaceButton();
+
+        // show tutorial
+        setExplanationIndex(4);
+        showExplanationWindow();
+
+        drState = DRState.CONTROL;
+    } else if(multifunctionalButtonFunction === ButtonFunction.PLACEMENT) {
+        OnScenePlaced();
+        hideReplaceButton();
         drState = DRState.PLACED;
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
-        hideReplaceButton();
         frustumCreationActive = true;
         addMouseListener();
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
@@ -783,7 +782,7 @@ function updateBoxFrustum() {
 
 function OnScenePlaced() {
     // show tutorial
-    setExplanationIndex(4);
+    setExplanationIndex(5);
     showExplanationWindow();
     
 
