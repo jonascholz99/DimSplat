@@ -723,7 +723,7 @@ function rotationsAreClose(rotation1, rotation2, tolerance) {
 let cameraPosition; 
 let cameraRotation; 
 
-const tolerance = 1.1; // 10% Toleranz
+const tolerance = 0.2; // 10% Toleranz
 
 function updateBoxFrustum() {
 
