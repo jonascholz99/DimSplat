@@ -798,12 +798,13 @@ function onSceneConfirmed() {
     // set transparency back to normal
     splat_object.splats.forEach(singleSplat => {
         singleSplat.ResetColor();
+        singleSplat.Rendered = 0;
     })
     splat_object.applyRendering();
 
     // render none
     // splat_object.splats.forEach(async singleSplat => {
-    //     singleSplat.Rendered = 0;
+    
     // })
     // splat_object.applyRendering();
 }
