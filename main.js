@@ -723,13 +723,13 @@ function rotationsAreClose(rotation1, rotation2, tolerance) {
 let cameraPosition; 
 let cameraRotation; 
 
-const tolerance = 0.1;
+const tolerance = 0.001;
 
 function updateBoxFrustum() {
 
     console.log("position: " + positionsAreClose(splat_camera.position, cameraPosition, tolerance));
     console.log("rotation: " +  rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance));
-    if (positionsAreClose(splat_camera.position, cameraPosition, tolerance) || rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance)) {
+    if (positionsAreClose(splat_camera.position, cameraPosition, tolerance) && rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance)) {
         return;
     }
     
