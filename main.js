@@ -733,12 +733,17 @@ let cameraRotation;
 
 const tolerance = 0.1;
 
-function updateBoxFrustum() {
+function processSingleSplat(singleSplat) {
+    if (boxFrustum.containsBox(singleSplat.bounds)) {
+        singleSplat.Rendered = 1;
+        const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
+        const transparency = Math.min(distance / transparency_threshold, 1.0);
+        singleSplat.setTransparency(transparency);
+        singleSplat.setBlending(1);
+    }
+}
 
-    console.log("position: " + positionsAreClose(splat_camera.position, cameraPosition, tolerance));
-    console.log("rotation: " +  rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance));
-    console.log(splat_camera.position)
-    console.log(cameraPosition)
+function updateBoxFrustum() {
     if (positionsAreClose(splat_camera.position, cameraPosition, tolerance) && rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance)) {
         return;
     }
@@ -788,39 +793,33 @@ function updateBoxFrustum() {
     console.time("Set SingleSplats")
     splat_object.data.resetRendering();
 
-
-    // myWorker.postMessage({
-    //     iterator,
-    //     boxFrustum,
-    //     transparency_threshold,
-    //     blend_value
-    // });
-    
-    
-    for (let node of iterator) {
-        const nodeData = node.data;
-        if (nodeData && nodeData.data) {
-            const nodeDataArray = nodeData.data; // Cache die Array-Referenz
-
-            for (let i = 0, len = nodeDataArray.length; i < len; i++) {
-                const singleSplat = nodeDataArray[i];
-
-                if (boxFrustum.containsBox(singleSplat.bounds)) {
-                    singleSplat.Rendered = 1;
-
-                    const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
-                    const transparency = Math.min(distance / transparency_threshold, 1.0);
-
-                    singleSplat.setTransparency(transparency);
-                    singleSplat.setBlending(blend_value);
-                }
-            }
-        }
+    // Promises zur Parallelisierung
+    const promises = [];
+    const nodes = [];
+    for (let result = iterator.next(); !result.done; result = iterator.next()) {
+        nodes.push(result.value);
     }
 
-    // updateInWorker(boxObject, splat_camera, splat_object, transparency_threshold, blend_value);
-    splat_object.applyRendering();
-    console.timeEnd("Set SingleSplats")
+    nodes.forEach(node => {
+        const nodeDataArray = node.data?.data;
+
+        if (nodeDataArray) {
+
+            promises.push(
+                new Promise((resolve) => {
+                    nodeDataArray.forEach(singleSplat => {
+                        processSingleSplat(singleSplat);
+                    });
+                    resolve();
+                })
+            );
+        }
+    });
+
+    Promise.all(promises).then(() => {
+        splat.applyRendering();
+        console.timeEnd("Set SingleSplats");
+    });
     console.timeEnd("update")
 }
 
