@@ -681,6 +681,9 @@ function drawIntersectionVolume(box) {
     initialSize = boxObject.size();
 
     boxObject.drawBox(splat_renderer);
+
+    cameraPosition = splat_camera.position.clone();
+    cameraRotation = splat_camera.rotation.clone();
     
     ShowControlPanel();
 }
@@ -728,7 +731,7 @@ function rotationsAreClose(rotation1, rotation2, tolerance) {
 let cameraPosition; 
 let cameraRotation; 
 
-const tolerance = 0.001;
+const tolerance = 0.1;
 
 function updateBoxFrustum() {
 
@@ -933,9 +936,6 @@ const updateInterval = 15;
 function onXRFrame(t, frame) {
     if(!should_render_XR_loop) return;
     const session = frame.session;
-
-    cameraPosition = splat_camera.position.clone();
-    cameraRotation = splat_camera.rotation.clone();
     
     if(cullByCube && frameCounter % updateInterval === 0) {
         updateBoxFrustum();
