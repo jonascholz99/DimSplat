@@ -172,7 +172,7 @@ function init() {
     frustum1 = null;
     frustum2 = null;
 
-    transparency_threshold = 0.5;
+    transparency_threshold = 1.5;
     blend_value = 1;
     
     boxObject = null;
@@ -686,7 +686,23 @@ function drawIntersectionVolume(box) {
 let nearTopLeft, nearBottomRight, nearTopRight, nearBottomLeft;
 let farTopLeft, farTopRight, farBottomLeft, farBottomRight;
 
+const myWorker = new Worker('./worker/TestWorker.js');
+
+myWorker.onmessage = function(event) {
+    const processedNodes = event.data;
+
+    // Anwenden der verarbeiteten Daten auf das splat_object
+    for (const singleSplat of processedNodes) {
+        singleSplat.setTransparency(singleSplat.transparency);
+        singleSplat.setBlending(singleSplat.blending);
+    }
+
+    splat_object.applyRendering();
+    console.timeEnd("Set SingleSplats");
+};
+
 function updateBoxFrustum() {
+    
     console.time("update")
     console.time("getCorners")
     screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
@@ -729,6 +745,15 @@ function updateBoxFrustum() {
     console.time("Set SingleSplats")
     splat_object.data.resetRendering();
 
+
+    // myWorker.postMessage({
+    //     iterator,
+    //     boxFrustum,
+    //     transparency_threshold,
+    //     blend_value
+    // });
+    
+    
     for (let node of iterator) {
         const nodeData = node.data;
         if (nodeData && nodeData.data) {
@@ -749,7 +774,8 @@ function updateBoxFrustum() {
             }
         }
     }
-    
+
+    // updateInWorker(boxObject, splat_camera, splat_object, transparency_threshold, blend_value);
     splat_object.applyRendering();
     console.timeEnd("Set SingleSplats")
     console.timeEnd("update")
@@ -788,7 +814,7 @@ function OnScenePlaced() {
 function AR()
 {
     splat_object.splats.forEach(async singleSplat => {
-        singleSplat.setTransparency(0.3)
+        singleSplat.setTransparency(0.15)
     })
     splat_object.applyRendering();
     
@@ -913,7 +939,7 @@ function onXRFrame(t, frame) {
 
 async function main()
 {
-    const url = `./splats/edit_living_room.splat`;
+    const url = `./splats/edit_zw1027_4.splat`;
     console.log("path: " + url)
     splat_object = await SPLAT.Loader.LoadAsync(url, splat_scene);
     
