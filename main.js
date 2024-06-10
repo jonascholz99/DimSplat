@@ -1,5 +1,6 @@
 import * as SPLAT from '@jonascholz/gaussian-splatting'
 import * as THREE from 'three'
+import Stats from "stats.js/src/Stats.js";
 
 /*
  * =================================================================================================
@@ -36,6 +37,8 @@ let first_frame_splat;
 let loaderOverlay;
 
 let cullByCube;
+
+let stats;
 
 const ButtonFunction = {
     NONE: 'none',
@@ -103,6 +106,10 @@ let splat_raycaster;
  *      and the SPLAT scene for displaying the Gaussian splats are initially configured."
  */
 function init() {
+    stats = new Stats();
+    stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild( stats.dom );
+    
     canvas = document.getElementById("canvas");
 
     should_render_start_loop = true;
@@ -928,6 +935,7 @@ const updateInterval = 15;
 
 function onXRFrame(t, frame) {
     if(!should_render_XR_loop) return;
+    stats.begin();
     const session = frame.session;
     
     if(cullByCube && frameCounter % updateInterval === 0) {
@@ -958,6 +966,8 @@ function onXRFrame(t, frame) {
     }
     
     frameCounter++;
+
+    stats.end();
     session.requestAnimationFrame(onXRFrame);
 }
 
