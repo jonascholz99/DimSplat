@@ -42,6 +42,7 @@ const ButtonFunction = {
     SCENE: 'scene',
     MASK1: 'mask1',
     MASK2: 'mask2',
+    TRANSFORM: 'transform',
     DIMINISH: 'diminish',
     REMASK: 'remask'
 }
@@ -54,6 +55,9 @@ let multifunctionalButtonFunction = ButtonFunction.NONE;
 
 let boxObject;
 let boxFrustum;
+
+let initialCenter;
+let initialSize;
 
 // AR variables
 let xrRefSpace;
@@ -84,6 +88,7 @@ let splat_scene;
 let splat_camera;
 let splat_object;
 let splat_raycaster;
+
 
 /*
  * =================================================================================================
@@ -123,6 +128,13 @@ function init() {
 
     splat_raycaster = new SPLAT.Raycaster(splat_renderer, false);
 
+    document.getElementById('x-position').oninput = function() { updateValue('x-position-value', this.value);};
+    document.getElementById('y-position').oninput = function() { updateValue('y-position-value', this.value);};
+    document.getElementById('z-position').oninput = function() { updateValue('z-position-value', this.value);};
+    document.getElementById('x-scaling').oninput = function() { updateValue('x-scaling-value', this.value);};
+    document.getElementById('y-scaling').oninput = function() { updateValue('y-scaling-value', this.value);};
+    document.getElementById('z-scaling').oninput = function() { updateValue('z-scaling-value', this.value);};
+    
     buttonWrapper = document.getElementById('buttonWrapper');
     
     replaceButton = document.getElementById("replaceButton");
@@ -309,6 +321,43 @@ function nextExplanation() {
  *      defined and maintained.
  */
 
+function ShowControlPanel() {
+    document.getElementById("control-panel").classList.add('show');
+}
+
+function HideControlPanel() {
+    document.getElementById("control-panel").classList.remove('show');
+}
+
+function updateValue(id, value) {
+    document.getElementById(id).textContent = value;
+    updateCube();
+}
+
+function updateCube() {
+    const xPosition = parseFloat(document.getElementById('x-position').value);
+    const yPosition = parseFloat(document.getElementById('y-position').value);
+    const zPosition = parseFloat(document.getElementById('z-position').value);
+
+    const xScaling = parseFloat(document.getElementById('x-scaling').value);
+    const yScaling = parseFloat(document.getElementById('y-scaling').value);
+    const zScaling = parseFloat(document.getElementById('z-scaling').value);
+    
+    boxObject.ereaseBox(splat_renderer);
+
+    const newCenter = initialCenter.add(new SPLAT.Vector3(xPosition, yPosition, zPosition));
+    const newSize = new SPLAT.Vector3(initialSize.x * xScaling, initialSize.y * yScaling, initialSize.z * zScaling);
+
+    const halfSize = newSize.divide(2);
+    const newMin = newCenter.subtract(halfSize);
+    const newMax = newCenter.add(halfSize);
+
+    boxObject.min = newMin;
+    boxObject.max = newMax;
+
+    boxObject.drawBox(splat_renderer)
+}
+
 function showReplaceButton() {
     replaceButton.style.display = 'block';
 }
@@ -318,31 +367,33 @@ function hideReplaceButton() {
 }
 
 function handleReplaceButtonClick() {
-    AR();
-    drState = DRState.ENTERED;
-    setExplanationIndex(1);
-
-    cullByCube = false;
-    boxObject = null;
-
-    touchPoints1 = [];
-    touchPoints2 = [];
-    frustum1 = null;
-    frustum2 = null;
-    frustumCreationActive = false;
+    location.reload()
     
-    multifunctionalButtonFunction = ButtonFunction.NONE;
-    UpdateMultifunctionalButtonState();
-    
-    hideReplaceButton();
-
-    setTimeout(() => {
-        multifunctionalButtonFunction = ButtonFunction.SCENE;
-        UpdateMultifunctionalButtonState();
-        
-        showHelpButton();
-        
-    }, 600);
+    // AR();
+    // drState = DRState.ENTERED;
+    // setExplanationIndex(1);
+    //
+    // cullByCube = false;
+    // boxObject = null;
+    //
+    // touchPoints1 = [];
+    // touchPoints2 = [];
+    // frustum1 = null;
+    // frustum2 = null;
+    // frustumCreationActive = false;
+    //
+    // multifunctionalButtonFunction = ButtonFunction.NONE;
+    // UpdateMultifunctionalButtonState();
+    //
+    // hideReplaceButton();
+    //
+    // setTimeout(() => {
+    //     multifunctionalButtonFunction = ButtonFunction.SCENE;
+    //     UpdateMultifunctionalButtonState();
+    //    
+    //     showHelpButton();
+    //    
+    // }, 600);
 }
 function showHelpButton() {
     helpButton.style.right = '10px';
@@ -394,6 +445,9 @@ function UpdateMultifunctionalButtonState() {
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
         multifunctionalButton.textContent = "Erneut Markieren";
         buttonWrapper.classList.add('visible');
+    } else if(multifunctionalButtonFunction === ButtonFunction.TRANSFORM) {
+        multifunctionalButton.textContent = "Bestätigen";
+        buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
         multifunctionalButton.textContent = "Diminish";
         buttonWrapper.classList.add('visible');
@@ -427,6 +481,13 @@ function handleMultifunctionalButtonClick(event) {
         addMouseListener();
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
         frustumCreationActive = true;
+    } else if(multifunctionalButtonFunction === ButtonFunction.TRANSFORM) {
+        HideControlPanel();
+        setTimeout(() => {
+            multifunctionalButtonFunction = ButtonFunction.DIMINISH;
+            UpdateMultifunctionalButtonState();
+            
+        }, 600);
     } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
         cullByCube = true;
         
@@ -583,13 +644,18 @@ function handleMouseDown(event) {
 }
 
 function drawIntersectionVolume(box) {
-    // box.drawBox(splat_renderer);
-    
-    multifunctionalButtonFunction = ButtonFunction.DIMINISH;
+    multifunctionalButtonFunction = ButtonFunction.TRANSFORM;
     UpdateMultifunctionalButtonState();
-
+    
     boxObject = box;
     hideScreenDrawings();
+
+    initialCenter = boxObject.center();
+    initialSize = boxObject.size();
+
+    boxObject.drawBox(splat_renderer);
+    
+    ShowControlPanel();
 }
 
 let nearTopLeft, nearBottomRight, nearTopRight, nearBottomLeft;

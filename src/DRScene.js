@@ -23,5 +23,40 @@ export const DRSceneHTML = `
         <button class="multifunctional-button" id="multifunctionalButton">Floating Button</button>
         <button class="multifunctional-button" id="replaceButton">Replace</button>
     </div>
+    
+    <!-- control panel -->        
+    <div class="control-panel" id="control-panel">
+        <h1>Control Panel</h1>
+        <div class="sections-container">
+            <div class="section">
+                <h2>Position</h2>
+                <label for="x-position">X-Position</label>
+                <input type="range" id="x-position" min="-5" max="5" value="0" step="0.1">
+                <span id="x-position-value">0</span>
+
+                <label for="y-position">Y-Position</label>
+                <input type="range" id="y-position" min="-5" max="5" value="0" step="0.1">
+                <span id="y-position-value">0</span>
+
+                <label for="z-position">Z-Position</label>
+                <input type="range" id="z-position" min="-5" max="5" value="0" step="0.1">
+                <span id="z-position-value">0</span>
+            </div>
+            <div class="section">
+                <h2>Skalierung</h2>
+                <label for="x-scaling">X-Skalierung</label>
+                <input type="range" id="x-scaling" min="0.1" max="5" step="0.1" value="1">
+                <span id="x-scaling-value">1</span>
+
+                <label for="y-scaling">Y-Skalierung</label>
+                <input type="range" id="y-scaling" min="0.1" max="5" step="0.1" value="1">
+                <span id="y-scaling-value">1</span>
+
+                <label for="z-scaling">Z-Skalierung</label>
+                <input type="range" id="z-scaling" min="0.1" max="5" step="0.1" value="1">
+                <span id="z-scaling-value">1</span>
+            </div>
+        </div>
+    </div>
 </div>
 `;
