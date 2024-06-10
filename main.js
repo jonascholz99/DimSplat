@@ -976,7 +976,7 @@ function onXRFrame(t, frame) {
     
     frameCounter++;
 
-    stats.end();
+    stats.end(0, splat_object.numberOfRenderedSplats);
     session.requestAnimationFrame(onXRFrame);
 }
 

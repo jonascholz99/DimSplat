@@ -34,6 +34,9 @@ var Stats = function () {
     var msPanel = addPanel(new Stats.Panel('MS', '#0f0', '#020'));
 
     var fpsHistory = [];
+    var frameTimes = [];
+    var frameChanges = [];
+    var splatCounts = [];
     var collecting = false;
     var startCollectingTime = 0;
 
@@ -53,10 +56,11 @@ var Stats = function () {
             beginTime = (performance || Date).now();
         },
 
-        end: function () {
+        end: function (changedFrames = 0, numberOfSplats = 0) {
             frames++;
             var time = (performance || Date).now();
-            msPanel.update(time - beginTime, 200);
+            var frameTime = time - beginTime;
+            msPanel.update(frameTime, 200);
 
             if (time >= prevTime + 1000) {
                 var fps = (frames * 1000) / (time - prevTime);
@@ -64,6 +68,9 @@ var Stats = function () {
 
                 if (collecting) {
                     fpsHistory.push({ time: time - startCollectingTime, fps: fps });
+                    frameTimes.push({ time: time - startCollectingTime, frameTime: frameTime });
+                    frameChanges.push({ time: time - startCollectingTime, changedFrames: changedFrames });
+                    splatCounts.push({ time: time - startCollectingTime, splats: numberOfSplats });
                 }
 
                 prevTime = time;
@@ -77,12 +84,15 @@ var Stats = function () {
             return time;
         },
 
-        update: function () {
-            beginTime = this.end();
+        update: function (changedFrames = 0, numberOfSplats = 0) {
+            beginTime = this.end(changedFrames, numberOfSplats);
         },
 
         startCollectingFPS: function () {
             fpsHistory = [];
+            frameTimes = [];
+            frameChanges = [];
+            splatCounts = [];
             startCollectingTime = performance.now();
             collecting = true;
         },
@@ -92,7 +102,13 @@ var Stats = function () {
         },
 
         downloadFPSData: function () {
-            var blob = new Blob([JSON.stringify(fpsHistory, null, 2)], { type: 'application/json' });
+            var data = {
+                fpsHistory: fpsHistory,
+                frameTimes: frameTimes,
+                frameChanges: frameChanges,
+                splatCounts: splatCounts
+            };
+            var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             var url = URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
