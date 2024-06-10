@@ -454,7 +454,6 @@ function UpdateMultifunctionalButtonState() {
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
         multifunctionalButton.textContent = "Objekt Markieren";
-        console.log("Show markieren button")
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
         multifunctionalButton.textContent = "Erneut Markieren";
@@ -708,11 +707,6 @@ myWorker.onmessage = function(event) {
 
 // helper functions
 function isWithinTolerance(value1, value2, tolerance) {
-    console.log("value1: " + value1);
-    console.log("value2: " + value1);
-    console.log("Math.abs(value1 - value2): " + Math.abs(value1 - value2));
-    console.log("Math.abs(value1 * tolerance): " + Math.abs(value1 * tolerance));
-    
     return Math.abs(value1 - value2) <= Math.abs(value1 * tolerance);
 }
 
@@ -817,7 +811,7 @@ function updateBoxFrustum() {
     });
 
     Promise.all(promises).then(() => {
-        splat.applyRendering();
+        splat_object.applyRendering();
         console.timeEnd("Set SingleSplats");
     });
     console.timeEnd("update")
