@@ -727,7 +727,7 @@ const tolerance = 0.2; // 10% Toleranz
 
 function updateBoxFrustum() {
 
-    if (!positionsAreClose(splat_camera.position, cameraPosition, tolerance) || !rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance)) {
+    if (positionsAreClose(splat_camera.position, cameraPosition, tolerance) || rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance)) {
         return;
     }
     
