@@ -813,10 +813,10 @@ function OnScenePlaced() {
 
 function AR()
 {
-    splat_object.splats.forEach(async singleSplat => {
-        singleSplat.setTransparency(0.15)
-    })
-    splat_object.applyRendering();
+    // splat_object.splats.forEach(async singleSplat => {
+    //     singleSplat.setTransparency(0.15)
+    // })
+    // splat_object.applyRendering();
     
     if( currentSession == null )
     {
