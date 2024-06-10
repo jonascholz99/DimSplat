@@ -705,6 +705,11 @@ myWorker.onmessage = function(event) {
 
 // helper functions
 function isWithinTolerance(value1, value2, tolerance) {
+    console.log("value1: " + value1);
+    console.log("value2: " + value1);
+    console.log("Math.abs(value1 - value2): " + Math.abs(value1 - value2));
+    console.log("Math.abs(value1 * tolerance): " + Math.abs(value1 * tolerance));
+    
     return Math.abs(value1 - value2) <= Math.abs(value1 * tolerance);
 }
 
