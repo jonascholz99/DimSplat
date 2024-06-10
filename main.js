@@ -485,6 +485,8 @@ function handleMultifunctionalButtonClick(event) {
         setExplanationIndex(1);
         showExplanationWindow();
     } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
+        OnScenePlaced();
+        
         showReplaceButton();
 
         // show tutorial
@@ -493,7 +495,8 @@ function handleMultifunctionalButtonClick(event) {
 
         drState = DRState.CONTROL;
     } else if(multifunctionalButtonFunction === ButtonFunction.PLACEMENT) {
-        OnScenePlaced();
+        onSceneConfirmed();
+        
         hideReplaceButton();
         drState = DRState.PLACED;
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
@@ -781,26 +784,27 @@ function updateBoxFrustum() {
 }
 
 function OnScenePlaced() {
+    three_camera_setup_position = three_camera.position.clone();
+    three_camera_setup_rotation = three_camera.quaternion.clone();
+    // console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
+    splat_placed = true;
+}
+
+function onSceneConfirmed() {
     // show tutorial
     setExplanationIndex(5);
     showExplanationWindow();
     
-
     // set transparency back to normal
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.ResetColor();
     })
-    
+
     // render none
     splat_object.splats.forEach(async singleSplat => {
         singleSplat.Rendered = 0;
     })
     splat_object.applyRendering();
-    
-    three_camera_setup_position = three_camera.position.clone();
-    three_camera_setup_rotation = three_camera.quaternion.clone();
-    // console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
-    splat_placed = true;
 }
 
 /*
