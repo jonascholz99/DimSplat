@@ -703,7 +703,33 @@ myWorker.onmessage = function(event) {
     console.timeEnd("Set SingleSplats");
 };
 
+// helper functions
+function isWithinTolerance(value1, value2, tolerance) {
+    return Math.abs(value1 - value2) <= Math.abs(value1 * tolerance);
+}
+
+function positionsAreClose(position1, position2, tolerance) {
+    return isWithinTolerance(position1.x, position2.x, tolerance) &&
+        isWithinTolerance(position1.y, position2.y, tolerance) &&
+        isWithinTolerance(position1.z, position2.z, tolerance);
+}
+
+function rotationsAreClose(rotation1, rotation2, tolerance) {
+    return isWithinTolerance(rotation1.x, rotation2.x, tolerance) &&
+        isWithinTolerance(rotation1.y, rotation2.y, tolerance) &&
+        isWithinTolerance(rotation1.z, rotation2.z, tolerance);
+}
+
+let cameraPosition; 
+let cameraRotation; 
+
+const tolerance = 1.1; // 10% Toleranz
+
 function updateBoxFrustum() {
+
+    if (!positionsAreClose(splat_camera.position, cameraPosition, tolerance) || !rotationsAreClose(splat_camera.rotation, cameraRotation, tolerance)) {
+        return;
+    }
     
     console.time("update")
     console.time("getCorners")
@@ -896,6 +922,9 @@ function onXRFrame(t, frame) {
     if(!should_render_XR_loop) return;
     const session = frame.session;
 
+    cameraPosition = splat_camera.position.clone();
+    cameraRotation = splat_camera.rotation.clone();
+    
     if(cullByCube && frameCounter % updateInterval === 0) {
         updateBoxFrustum();
     }
