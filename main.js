@@ -107,7 +107,7 @@ let splat_raycaster;
  */
 function init() {
     stats = new Stats();
-    stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
     document.body.appendChild( stats.dom );
     
     canvas = document.getElementById("canvas");
@@ -362,6 +362,25 @@ function hideBlendSlider() {
 
 function onBlendSliderTouched() {
     blend_value = blendSlider.value;
+    
+    const promises = [];
+
+    splat_object._splats.forEach(singleSplat => {
+        promises.push(
+            new Promise((resolve) => {
+                blendSingleSplat(singleSplat);
+                resolve();
+            })
+        );
+    });
+
+    Promise.all(promises).then(() => {
+        splat_object.applyRendering();
+    });
+}
+
+function blendSingleSplat(singleSplat) {
+    singleSplat.setBlending(blend_value);
 }
 
 function ShowControlPanel() {
@@ -529,14 +548,14 @@ function handleMultifunctionalButtonClick(event) {
             multifunctionalButtonFunction = ButtonFunction.REMASK;
             UpdateMultifunctionalButtonState();
 
-            // Start collecting FPS data
-            stats.startCollectingFPS();
-
-            // Stop collecting FPS data and download it after 10 seconds
-            setTimeout(function() {
-                stats.stopCollectingFPS();
-                stats.downloadFPSData();
-            }, 60000);
+            // // Start collecting FPS data
+            // stats.startCollectingFPS();
+            //
+            // // Stop collecting FPS data and download it after 10 seconds
+            // setTimeout(function() {
+            //     stats.stopCollectingFPS();
+            //     stats.downloadFPSData();
+            // }, 60000);
             
             showReplaceButton();
         }, 2000);
@@ -706,21 +725,6 @@ function drawIntersectionVolume(box) {
 let nearTopLeft, nearBottomRight, nearTopRight, nearBottomLeft;
 let farTopLeft, farTopRight, farBottomLeft, farBottomRight;
 
-const myWorker = new Worker('./worker/TestWorker.js');
-
-myWorker.onmessage = function(event) {
-    const processedNodes = event.data;
-
-    // Anwenden der verarbeiteten Daten auf das splat_object
-    for (const singleSplat of processedNodes) {
-        singleSplat.setTransparency(singleSplat.transparency);
-        singleSplat.setBlending(singleSplat.blending);
-    }
-
-    splat_object.applyRendering();
-    console.timeEnd("Set SingleSplats");
-};
-
 // helper functions
 function isWithinTolerance(value1, value2, tolerance) {
     return Math.abs(value1 - value2) <= Math.abs(value1 * tolerance);
@@ -749,7 +753,7 @@ function processSingleSplat(singleSplat) {
         const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
         const transparency = Math.min(distance / transparency_threshold, 1.0);
         singleSplat.setTransparency(transparency);
-        singleSplat.setBlending(1);
+        singleSplat.setBlending(blend_value);
     }
 }
 
@@ -761,13 +765,8 @@ function updateBoxFrustum() {
     cameraPosition = splat_camera.position.clone();
     cameraRotation = splat_camera.rotation.clone();
     
-    console.time("update")
-    console.time("getCorners")
     screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
-    // cullByCube = false;     
-    console.timeEnd("getCorners")
-
-    console.time("minMax")
+    
     let minX = Infinity, minY = Infinity;
     let maxX = -Infinity, maxY = -Infinity;
 
@@ -777,9 +776,7 @@ function updateBoxFrustum() {
         maxX = Math.max(maxX, point.x);
         maxY = Math.max(maxY, point.y);
     }
-    console.timeEnd("minMax")
-
-    console.time("createFrustum")
+    
     nearTopLeft = splat_camera.screenToWorldPoint(minX, maxY);
     nearBottomRight = splat_camera.screenToWorldPoint(maxX, minY);
     nearTopRight = splat_camera.screenToWorldPoint(maxX, maxY);
@@ -789,21 +786,13 @@ function updateBoxFrustum() {
     farTopRight = nearTopRight.add(splat_camera.screenPointToRay(maxX, maxY).multiply(splat_camera.data.far));
     farBottomLeft = nearBottomLeft.add(splat_camera.screenPointToRay(minX, minY).multiply(splat_camera.data.far));
     farBottomRight = nearBottomRight.add(splat_camera.screenPointToRay(maxX, minY).multiply(splat_camera.data.far));
-
-    // boxFrustum.ereaseFrustum(renderer);
+    
     boxFrustum.setFromPoints(nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight, farTopLeft, farTopRight,farBottomLeft, farBottomRight);
-    // boxFrustum.drawFrustum(renderer);    
-
-    console.timeEnd("createFrustum")
-
-    console.time("calculate iterator")
+    
     const iterator = new SPLAT.OctreeIterator(splat_object._octree.root, boxFrustum);
-    console.timeEnd("calculate iterator")
-
-    console.time("Set SingleSplats")
+    
     splat_object.data.resetRendering();
-
-    // Promises zur Parallelisierung
+    
     const promises = [];
     const nodes = [];
     for (let result = iterator.next(); !result.done; result = iterator.next()) {
@@ -828,15 +817,13 @@ function updateBoxFrustum() {
 
     Promise.all(promises).then(() => {
         splat_object.applyRendering();
-        console.timeEnd("Set SingleSplats");
     });
-    console.timeEnd("update")
 }
 
 function OnScenePlaced() {
     three_camera_setup_position = three_camera.position.clone();
     three_camera_setup_rotation = three_camera.quaternion.clone();
-    // console.log("three_camera_setup_position: (" + three_camera_setup_position.x + ", " + three_camera_setup_position.y + ", " + three_camera_setup_position.z + ")")
+    
     splat_placed = true;
 }
 
@@ -851,12 +838,6 @@ function onSceneConfirmed() {
         singleSplat.Rendered = 0;
     })
     splat_object.applyRendering();
-
-    // render none
-    // splat_object.splats.forEach(async singleSplat => {
-    
-    // })
-    // splat_object.applyRendering();
 }
 
 /*
@@ -971,7 +952,6 @@ function onXRFrame(t, frame) {
 
     if(first_frame) {
         first_frame = false;
-        console.log("firstFrame");
     }
     
     frameCounter++;
