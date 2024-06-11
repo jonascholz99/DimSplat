@@ -368,10 +368,10 @@ function hideBlendSlider() {
 function onBlendSliderTouched() {
     blend_value = blendSlider.value;
     
-    lastProcessedSplats.forEach(singleSplat => {
-        singleSplat.setBlending(blend_value);
-    });
-    splat_object.applyRendering();
+    // lastProcessedSplats.forEach(singleSplat => {
+    //     singleSplat.setBlending(blend_value);
+    // });
+    // splat_object.applyRendering();
 }
 
 function ShowControlPanel() {
