@@ -67,6 +67,8 @@ let initialSize;
 
 let blendSlider, sliderContainer;
 
+let lastProcessedSplats;
+
 // AR variables
 let xrRefSpace;
 let currentSession;
@@ -197,6 +199,8 @@ function init() {
     initial_y = 1.8 * 1.5; //-15
 
     currentSession = null;
+
+    lastProcessedSplats = [];
 }
 
 /*
@@ -364,26 +368,10 @@ function hideBlendSlider() {
 function onBlendSliderTouched() {
     blend_value = blendSlider.value;
     
-    const promises = [];
-
-    splat_object._splats.forEach(singleSplat => {
-        promises.push(
-            new Promise((resolve) => {
-                blendSingleSplat(singleSplat);
-                resolve();
-            })
-        );
+    lastProcessedSplats.forEach(singleSplat => {
+        singleSplat.setBlending(blend_value);
     });
-
-    Promise.all(promises).then(() => {
-        splat_object.applyRendering();
-    });
-}
-
-function blendSingleSplat(singleSplat) {
-    if(singleSplat.Rendered) {
-        singleSplat.setBlending(blend_value);        
-    }
+    splat_object.applyRendering();
 }
 
 function ShowControlPanel() {
@@ -798,6 +786,7 @@ function updateBoxFrustum() {
     
     const promises = [];
     const nodes = [];
+    lastProcessedSplats = [];
     for (let result = iterator.next(); !result.done; result = iterator.next()) {
         nodes.push(result.value);
     }
@@ -810,6 +799,7 @@ function updateBoxFrustum() {
             promises.push(
                 new Promise((resolve) => {
                     nodeDataArray.forEach(singleSplat => {
+                        lastProcessedSplats.push(singleSplat);
                         processSingleSplat(singleSplat);
                     });
                     resolve();
