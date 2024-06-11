@@ -1,6 +1,7 @@
 import * as SPLAT from '@jonascholz/gaussian-splatting'
 import * as THREE from 'three'
 import Stats from "./Stats.js"
+import {sin} from "three/nodes";
 
 /*
  * =================================================================================================
@@ -380,7 +381,9 @@ function onBlendSliderTouched() {
 }
 
 function blendSingleSplat(singleSplat) {
-    singleSplat.setBlending(blend_value);
+    if(singleSplat.Rendered) {
+        singleSplat.setBlending(blend_value);        
+    }
 }
 
 function ShowControlPanel() {
