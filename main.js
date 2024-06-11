@@ -786,7 +786,7 @@ function updateBoxFrustum() {
     
     const promises = [];
     const nodes = [];
-    lastProcessedSplats = [];
+    // lastProcessedSplats = [];
     for (let result = iterator.next(); !result.done; result = iterator.next()) {
         nodes.push(result.value);
     }
@@ -799,7 +799,7 @@ function updateBoxFrustum() {
             promises.push(
                 new Promise((resolve) => {
                     nodeDataArray.forEach(singleSplat => {
-                        lastProcessedSplats.push(singleSplat);
+                        // lastProcessedSplats.push(singleSplat);
                         processSingleSplat(singleSplat);
                     });
                     resolve();
