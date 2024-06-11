@@ -739,13 +739,13 @@ let cameraRotation;
 const tolerance = 0.1;
 
 function processSingleSplat(singleSplat) {
-    // if (boxFrustum.containsBox(singleSplat.bounds)) {
+    const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
+    if (distance > 0) {
         singleSplat.Rendered = 1;
-        const distance = boxFrustum.distanceToPoint(singleSplat.PositionVec3);
         const transparency = Math.min(distance / transparency_threshold, 1.0);
         singleSplat.setTransparency(transparency);
         singleSplat.setBlending(blend_value);
-    // }
+    }
 }
 
 function updateBoxFrustum() {
