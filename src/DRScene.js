@@ -8,7 +8,7 @@ export const DRSceneHTML = `
         <div class="text" id="text">
             <p>Bitte achte darauf, dein Handy während dem platzieren immer aufrecht zu halten</p>
         </div>
-        <button class="button" id="nextButton">Ok verstanden!</button>
+        <button class="button" id="nextButton">---</button>
     </div>
     
     <div id="loader-overlay">

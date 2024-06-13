@@ -12,6 +12,7 @@ import {sin} from "three/nodes";
  *      that control the application behavior throughout its runtime.
  */
 
+let language = "EN"
 // control the rendering loops
 let should_render_start_loop;
 let should_render_XR_loop;
@@ -225,7 +226,11 @@ function initExplanationController() {
 
     explanationButton = document.getElementById('nextButton');
     explanationButton.addEventListener('click', handleExplanationButtonClicked);
-    
+    if (language === "DE") {
+        explanationButton.innerHTML = "Ok verstanden!"
+    } else {
+        explanationButton.innerHTML = "Ok, got it!"   
+    }
     explanationCanvas = document.getElementById('card')
     videoSource = document.getElementById('videoSource');
     videoElement = document.getElementById('video');
@@ -234,34 +239,44 @@ function initExplanationController() {
     videos  = [
         {
             url: "./videos/video_keep upright.mp4",
-            text: "Bitte halte dein Handy während des Platzierens stets aufrecht."
+            textDE: "Bitte halte dein Handy während des Platzierens stets aufrecht.",
+            textEN: "Please keep your phone upright while placing the scene."
         },
         {
             url: "./videos/video_move.mp4",
-            text: "Bewege das Handy und versuche, das transparente Bild so deckungsgleich wie möglich mit der realen Szene zu bringen."
+            textDE: "Bewege das Handy und versuche, das transparente Bild so deckungsgleich wie möglich mit der realen Szene zu bringen.",
+            textEN: "Move the phone and try to align the transparent image as closely as possible with the real scene."
         },
         {
             url: "./videos/video_back and forth.mp4",
-            text: "Bewege dich auch nach vorne und hinten, um die Position so gut es geht zu treffen."
+            textDE: "Bewege dich auch nach vorne und hinten, um die Position so gut es geht zu treffen.",
+            textEN: "Move forward and backward as well to match the position as accurately as possible."
         },
         {
             url: "./videos/video_place.mp4",
-            text: "Wenn du zufrieden bist, drücke den Button, um die Szene zu platzieren."
+            textDE: "Wenn du zufrieden bist, drücke den Button, um die Szene zu platzieren.",
+            textEN: "When you are satisfied, press the button to place the scene."
         },
         {
             url: "./videos/video_placement control.mp4",
-            text: "Schaue dich um und überprüfe, ob die Szene gut platziert ist. Wenn du zufrieden bist, drücke auf 'Weiter', ansonsten platziere die Szene neu. Das Erlebnis kann gleich starten."
+            textDE: "Schaue dich um und überprüfe, ob die Szene gut platziert ist. Wenn du zufrieden bist, drücke auf 'Weiter', ansonsten platziere die Szene neu. Das Erlebnis kann gleich starten.",
+            textEN: "Look around and check if the scene is well-placed. If you are satisfied, press 'Next'; otherwise, reposition the scene. The experience can start shortly."
         },
         {
             url: "./videos/video_select.mp4",
-            text: "Um nun gleich ein Objekt verschwinden zu lassen, müssen wir zuerst wissen, wo es sich im Raum befindet. Schaue das Objekt mit der Kamera an und markiere es, indem du zweimal auf den Bildschirm tippst. \n\n Gehe dann auf die Seite des Objekts und markiere es erneut."
+            textDE: "Um nun gleich ein Objekt verschwinden zu lassen, müssen wir zuerst wissen, wo es sich im Raum befindet. Schaue das Objekt mit der Kamera an und markiere es, indem du zweimal auf den Bildschirm tippst. \n\n Gehe dann auf die Seite des Objekts und markiere es erneut.",
+            textEN: "To make an object disappear, we first need to know its location in space. Look at the object with the camera and mark it by double-tapping the screen. \n\n Then, move to the side of the object and mark it again."
         }
     ];
     
     // set start values
     videoSource.src = videos[currentExplanationIndex].url;
     videoElement.load();
-    textElement.innerHTML = `<p>${videos[currentExplanationIndex].text}</p>`;
+    if(language === "EN") {
+        textElement.innerHTML = `<p>${videos[currentExplanationIndex].textEN}</p>`;
+    } else if(language === "DE") {
+        textElement.innerHTML = `<p>${videos[currentExplanationIndex].textDE}</p>`;   
+    }
 }
 
 function handleExplanationButtonClicked(event) {
@@ -330,7 +345,11 @@ function setExplanationIndex(number) {
     if (currentExplanationIndex < videos.length) {
         videoSource.src = videos[currentExplanationIndex].url;
         videoElement.load();
-        textElement.innerHTML = `<p>${videos[currentExplanationIndex].text}</p>`;
+        if(language === "EN") {
+            textElement.innerHTML = `<p>${videos[currentExplanationIndex].textEN}</p>`;
+        } else if(language === "DE") {
+            textElement.innerHTML = `<p>${videos[currentExplanationIndex].textDE}</p>`;
+        }
     } else {
         hideExplanationWindow();
     }
@@ -342,7 +361,11 @@ function nextExplanation() {
     if (currentExplanationIndex < videos.length) {
         videoSource.src = videos[currentExplanationIndex].url;
         videoElement.load();
-        textElement.innerHTML = `<p>${videos[currentExplanationIndex].text}</p>`;
+        if(language === "EN") {
+            textElement.innerHTML = `<p>${videos[currentExplanationIndex].textEN}</p>`;
+        } else if(language === "DE") {
+            textElement.innerHTML = `<p>${videos[currentExplanationIndex].textDE}</p>`;
+        }
     } else {
         hideExplanationWindow();
     }
