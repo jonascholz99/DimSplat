@@ -490,10 +490,10 @@ function UpdateMultifunctionalButtonState() {
         multifunctionalButton.textContent = "Szene Platzieren";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.PLACEMENT) {
-        multifunctionalButton.textContent = "Weiter";
+        multifunctionalButton.textContent = "Next";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK1) {
-        multifunctionalButton.textContent = "Objekt Markieren";
+        multifunctionalButton.textContent = "Mask Object";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
         multifunctionalButton.textContent = "Erneut Markieren";
