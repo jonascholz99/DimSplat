@@ -21,7 +21,7 @@ export const DRSceneHTML = `
         
     <div class="button-wrapper" id="buttonWrapper">
         <button class="multifunctional-button" id="multifunctionalButton">Floating Button</button>
-        <button class="multifunctional-button" id="replaceButton">Neu Platzieren</button>
+        <button class="multifunctional-button" id="replaceButton">Replace</button>
     </div>
     
     <div class="slider-container" id="slider-container">
