@@ -57,6 +57,7 @@ const ButtonFunction = {
 let buttonWrapper;
 let multifunctionalButton;
 let helpButton;
+let recordButton;
 let replaceButton;
 let multifunctionalButtonFunction = ButtonFunction.NONE;
 
@@ -163,6 +164,9 @@ function init() {
     
     helpButton = document.getElementById("help-button");
     helpButton.addEventListener('click', handleHelpButtonClick);
+
+    recordButton = document.getElementById("record-button");
+    recordButton.addEventListener('click', handleRecordButtonClick);
     
     multifunctionalButton = document.getElementById("multifunctionalButton");
     multifunctionalButton.addEventListener('click', handleMultifunctionalButtonClick);
@@ -446,6 +450,25 @@ function handleReplaceButtonClick() {
     location.reload()
 }
 
+function showRecordButton() {
+    recordButton.style.right = '10px';
+}
+
+function hideRecordButton() {
+    recordButton.style.right = '10px';
+}
+
+function handleRecordButtonClick() {
+    // Start collecting FPS data
+    stats.startCollectingFPS();
+    hideRecordButton();
+
+    // Stop collecting FPS data and download it after 60 seconds
+    setTimeout(function() {
+        stats.stopCollectingFPS();
+        stats.downloadFPSData();
+    }, 60000);
+}
 function showHelpButton() {
     helpButton.style.right = '10px';
 }
@@ -561,15 +584,6 @@ function handleMultifunctionalButtonClick(event) {
         setTimeout(() => {
             multifunctionalButtonFunction = ButtonFunction.REMASK;
             UpdateMultifunctionalButtonState();
-
-            // // Start collecting FPS data
-            // stats.startCollectingFPS();
-            //
-            // // Stop collecting FPS data and download it after 10 seconds
-            // setTimeout(function() {
-            //     stats.stopCollectingFPS();
-            //     stats.downloadFPSData();
-            // }, 60000);
             
             showReplaceButton();
         }, 2000);
@@ -968,6 +982,7 @@ function onXRFrame(t, frame) {
 
     if(first_frame) {
         first_frame = false;
+        showRecordButton();
     }
     
     frameCounter++;

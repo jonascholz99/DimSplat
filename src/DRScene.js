@@ -18,6 +18,7 @@ export const DRSceneHTML = `
     </div>
     
     <button id="help-button">?</button>
+    <button id="record-button">R</button>
         
     <div class="button-wrapper" id="buttonWrapper">
         <button class="multifunctional-button" id="multifunctionalButton">Floating Button</button>

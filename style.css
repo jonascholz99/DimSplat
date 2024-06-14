@@ -253,7 +253,7 @@ body {
 #help-button {
      position: fixed;
      top: 10px;
-     right: -60px; /* Start außerhalb des Bildschirms */
+     right: -600px; /* Start außerhalb des Bildschirms */
      width: 40px;
      height: 40px;
      background-color: #28a745;
@@ -268,6 +268,25 @@ body {
      z-index: 1000;
      transition: right 0.3s ease-in-out; /* Animation */
  }
+
+#record-button {
+    position: fixed;
+    top: 60px;
+    right: -60px; /* Start außerhalb des Bildschirms */
+    width: 40px;
+    height: 40px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 100%;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: right 0.3s ease-in-out; /* Animation */
+}
 
 .control-panel {
     position: fixed;
