@@ -189,7 +189,7 @@ function init() {
     frustum1 = null;
     frustum2 = null;
 
-    transparency_threshold = 1.5;
+    transparency_threshold = 5.5;
     blend_value = 1;
     
     boxObject = null;
