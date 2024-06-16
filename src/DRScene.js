@@ -27,7 +27,7 @@ export const DRSceneHTML = `
     </div>
     
     <div class="slider-container" id="slider-container">
-        <input type="range" class="slider" id="blendSlider" min="0" max="1" value="1" step="0.01">
+        <input type="range" class="slider" id="blendSlider" min="0" max="3" value="1" step="0.01">
     </div>
 
 

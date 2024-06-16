@@ -435,7 +435,7 @@ function hideBlendSlider() {
 }
 
 function onBlendSliderTouched() {
-    blend_value = blendSlider.value;
+    transparency_threshold = blendSlider.value;
     
     // lastProcessedSplats.forEach(singleSplat => {
     //     singleSplat.setBlending(blend_value);
