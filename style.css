@@ -292,13 +292,13 @@ body {
     position: fixed;
     top: 10px;
     right: -600px; /* Start außerhalb des Bildschirms */
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     background-color: #28a745;
     color: white;
     border: none;
     border-radius: 50%;
-    font-size: 24px;
+    font-size: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
