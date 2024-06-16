@@ -254,8 +254,8 @@ body {
      position: fixed;
      top: 10px;
      right: -600px; /* Start außerhalb des Bildschirms */
-     width: 50px;
-     height: 50px;
+     width: 40px;
+     height: 40px;
      background-color: #28a745;
      color: white;
      border: none;
@@ -271,10 +271,10 @@ body {
 
 #record-button {
     position: fixed;
-    top: 80px;
+    top: 65px;
     right: -60px; /* Start außerhalb des Bildschirms */
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     background-color: #28a745;
     color: white;
     border: none;
@@ -292,8 +292,8 @@ body {
     position: fixed;
     top: 10px;
     right: -600px; /* Start außerhalb des Bildschirms */
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     background-color: #28a745;
     color: white;
     border: none;
@@ -356,7 +356,7 @@ span {
 
 .slider-container {
     position: fixed;
-    top: 150px; 
+    top: 120px; 
     right: -50px; 
     width: 40px; 
     height: calc(100% - 460px); 
