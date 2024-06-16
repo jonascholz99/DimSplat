@@ -488,34 +488,34 @@ function UpdateControlPanelAppearance() {
         leftControlHeader.innerText = "Position";
         rightControlHeader.innerText = "Rotation";
         
-        xPositionSlider.min = -3;
-        xPositionSlider.max = 3;
+        xPositionSlider.min = -1;
+        xPositionSlider.max = 1;
         xPositionSlider.step = 0.01;
         xPositionSlider.value = 0;
 
-        yPositionSlider.min = -3;
-        yPositionSlider.max = 3;
+        yPositionSlider.min = -1;
+        yPositionSlider.max = 1;
         yPositionSlider.step = 0.01;
         yPositionSlider.value = 0;
 
-        zPositionSlider.min = -3;
-        zPositionSlider.max = 3;
+        zPositionSlider.min = -1;
+        zPositionSlider.max = 1;
         zPositionSlider.step = 0.01;
         zPositionSlider.value = 0;
 
 
-        xRotScaleSlider.min = -2;
-        xRotScaleSlider.max = 2;
+        xRotScaleSlider.min = -1;
+        xRotScaleSlider.max = 1;
         xRotScaleSlider.step = 0.01;
         xRotScaleSlider.value = 0;
 
-        yRotScaleSlider.min = -2;
-        yRotScaleSlider.max = 2;
+        yRotScaleSlider.min = -1;
+        yRotScaleSlider.max = 1;
         yRotScaleSlider.step = 0.01;
         yRotScaleSlider.value = 0;
 
-        zRotScaleSlider.min = -2;
-        zRotScaleSlider.max = 2;
+        zRotScaleSlider.min = -1;
+        zRotScaleSlider.max = 1;
         zRotScaleSlider.step = 0.01;
         zRotScaleSlider.value = 0;
     }
