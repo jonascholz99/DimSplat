@@ -591,7 +591,7 @@ function showRecordButton() {
 }
 
 function hideRecordButton() {
-    recordButton.style.right = '10px';
+    recordButton.style.right = '-60px';
 }
 
 function handleRecordButtonClick() {
