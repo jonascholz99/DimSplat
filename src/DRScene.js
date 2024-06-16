@@ -33,10 +33,10 @@ export const DRSceneHTML = `
         
     <!-- control panel -->        
     <div class="control-panel" id="control-panel">
-        <h1>Control Panel</h1>
+        <h1 id="control-panel-header">Control Panel</h1>
         <div class="sections-container">
             <div class="section">
-                <h2>Position</h2>
+                <h2 id="left-control-header">Position</h2>
                 <label for="x-position">X-Position</label>
                 <input type="range" id="x-position" min="-3" max="3" value="0" step="0.1">
                 <span id="x-position-value">0</span>
@@ -50,7 +50,7 @@ export const DRSceneHTML = `
                 <span id="z-position-value">0</span>
             </div>
             <div class="section">
-                <h2>Skalierung</h2>
+                <h2 id="right-control-header">Skalierung</h2>
                 <label for="x-scaling">X-Skalierung</label>
                 <input type="range" id="x-scaling" min="0.1" max="2" step="0.1" value="1">
                 <span id="x-scaling-value">1</span>

@@ -54,12 +54,26 @@ const ButtonFunction = {
     REMASK: 'remask'
 }
 
+const ControlPanelFunction = {
+    NONE: 'none',
+    BOX_TRANSFORM: 'boxTransform',
+    SCENE_TRANSFORM: 'sceneTransform'
+}
+
 let buttonWrapper;
 let multifunctionalButton;
 let helpButton;
 let recordButton;
 let replaceButton;
 let multifunctionalButtonFunction = ButtonFunction.NONE;
+
+let controlPanel;
+let currentControlPanelFunction;
+let xPositionSlider, yPositionSlider, zPositionSlider;
+let xRotScaleSlider, yRotScaleSlider, zRotScaleSlider;
+let controlPanelHeader, leftControlHeader, rightControlHeader;
+
+let splatPosition, splatRotation;
 
 let boxObject;
 let boxFrustum;
@@ -145,12 +159,30 @@ function init() {
 
     splat_raycaster = new SPLAT.Raycaster(splat_renderer, false);
 
-    document.getElementById('x-position').oninput = function() { updateValue('x-position-value', this.value);};
-    document.getElementById('y-position').oninput = function() { updateValue('y-position-value', this.value);};
-    document.getElementById('z-position').oninput = function() { updateValue('z-position-value', this.value);};
-    document.getElementById('x-scaling').oninput = function() { updateValue('x-scaling-value', this.value);};
-    document.getElementById('y-scaling').oninput = function() { updateValue('y-scaling-value', this.value);};
-    document.getElementById('z-scaling').oninput = function() { updateValue('z-scaling-value', this.value);};
+    controlPanel = document.getElementById("control-panel");
+    currentControlPanelFunction = ControlPanelFunction.NONE;
+
+    controlPanelHeader = document.getElementById('control-panel-header');
+    leftControlHeader = document.getElementById('left-control-header');
+    rightControlHeader = document.getElementById('right-control-header');
+    
+    xPositionSlider = document.getElementById('x-position');
+    xPositionSlider.oninput = function() { updateValue('x-position-value', this.value);};
+    
+    yPositionSlider = document.getElementById('y-position');
+    yPositionSlider.oninput = function() { updateValue('y-position-value', this.value);};
+    
+    zPositionSlider = document.getElementById('z-position');
+    zPositionSlider.oninput = function() { updateValue('z-position-value', this.value);};
+
+    xRotScaleSlider = document.getElementById('x-scaling');
+    xRotScaleSlider.oninput = function() { updateValue('x-scaling-value', this.value);};
+    
+    yRotScaleSlider = document.getElementById('y-scaling');
+    yRotScaleSlider.oninput = function() { updateValue('y-scaling-value', this.value);};
+    
+    zRotScaleSlider = document.getElementById('z-scaling');
+    zRotScaleSlider.oninput = function() { updateValue('z-scaling-value', this.value);};
 
     sliderContainer = document.getElementById('slider-container'); 
     blendSlider = document.getElementById('blendSlider');
@@ -313,6 +345,12 @@ function handleExplanationButtonClicked(event) {
             UpdateMultifunctionalButtonState();
 
             showHelpButton();
+
+            splatPosition = splat_object.position;
+            splatRotation = splat_object.rotation;
+            currentControlPanelFunction = ControlPanelFunction.SCENE_TRANSFORM;
+            UpdateControlPanelAppearance();
+            ShowControlPanel();
             
             return;
         }
@@ -402,16 +440,110 @@ function onBlendSliderTouched() {
 }
 
 function ShowControlPanel() {
-    document.getElementById("control-panel").classList.add('show');
+    controlPanel.classList.add('show');
 }
 
 function HideControlPanel() {
-    document.getElementById("control-panel").classList.remove('show');
+    controlPanel.classList.remove('show');
 }
 
+function UpdateControlPanelAppearance() {
+    if(currentControlPanelFunction === ControlPanelFunction.BOX_TRANSFORM) {
+        controlPanelHeader.innerText = "Transform Scene";
+        leftControlHeader.innerText = "Position";
+        rightControlHeader.innerText = "Rotation";
+        
+        xPositionSlider.min = -3;
+        xPositionSlider.max = 3;
+        xPositionSlider.step = 0.1;
+        xPositionSlider.value = 0;
+
+        yPositionSlider.min = -3;
+        yPositionSlider.max = 3;
+        yPositionSlider.step = 0.1;
+        yPositionSlider.value = 0;
+
+        zPositionSlider.min = -3;
+        zPositionSlider.max = 3;
+        zPositionSlider.step = 0.1;
+        zPositionSlider.value = 0;
+
+
+        xRotScaleSlider.min = 0.1;
+        xRotScaleSlider.max = 2;
+        xRotScaleSlider.step = 0.1;
+        xRotScaleSlider.value = 1;
+
+        yRotScaleSlider.min = 0.1;
+        yRotScaleSlider.max = 2;
+        yRotScaleSlider.step = 0.1;
+        yRotScaleSlider.value = 1;
+
+        zRotScaleSlider.min = 0.1;
+        zRotScaleSlider.max = 2;
+        zRotScaleSlider.step = 0.1;
+        zRotScaleSlider.value = 1;
+    } else if (currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {
+        controlPanelHeader.innerText = "Transform Scene";
+        leftControlHeader.innerText = "Position";
+        rightControlHeader.innerText = "Rotation";
+        
+        xPositionSlider.min = -3;
+        xPositionSlider.max = 3;
+        xPositionSlider.step = 0.01;
+        xPositionSlider.value = 0;
+
+        yPositionSlider.min = -3;
+        yPositionSlider.max = 3;
+        yPositionSlider.step = 0.01;
+        yPositionSlider.value = 0;
+
+        zPositionSlider.min = -3;
+        zPositionSlider.max = 3;
+        zPositionSlider.step = 0.01;
+        zPositionSlider.value = 0;
+
+
+        xRotScaleSlider.min = -2;
+        xRotScaleSlider.max = 2;
+        xRotScaleSlider.step = 0.01;
+        xRotScaleSlider.value = 0;
+
+        yRotScaleSlider.min = -2;
+        yRotScaleSlider.max = 2;
+        yRotScaleSlider.step = 0.01;
+        yRotScaleSlider.value = 0;
+
+        zRotScaleSlider.min = -2;
+        zRotScaleSlider.max = 2;
+        zRotScaleSlider.step = 0.01;
+        zRotScaleSlider.value = 0;
+    }
+}
 function updateValue(id, value) {
     document.getElementById(id).textContent = value;
-    updateCube();
+
+    if(currentControlPanelFunction === ControlPanelFunction.BOX_TRANSFORM) {
+        updateCube();
+    } else if(currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {
+        updateScene();
+    }
+}
+
+function updateScene() {
+    const xPosition = parseFloat(xPositionSlider.value);
+    const yPosition = parseFloat(yPositionSlider.value);
+    const zPosition = parseFloat(zPositionSlider.value);
+
+    const xRotation = parseFloat(xRotScaleSlider.value);
+    const yRotation = parseFloat(yRotScaleSlider.value);
+    const zRotation = parseFloat(zRotScaleSlider.value);
+
+    splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
+    splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
+
+    splat_object.position = splatPosition;
+    splat_object.rotation = splatRotation;
 }
 
 function updateCube() {
@@ -746,7 +878,9 @@ function drawIntersectionVolume(box) {
 
     cameraPosition = splat_camera.position.clone();
     cameraRotation = splat_camera.rotation.clone();
-    
+
+    currentControlPanelFunction = ControlPanelFunction.BOX_TRANSFORM;
+    UpdateControlPanelAppearance();
     ShowControlPanel();
 }
 
