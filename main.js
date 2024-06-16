@@ -64,6 +64,7 @@ let buttonWrapper;
 let multifunctionalButton;
 let helpButton;
 let recordButton;
+let showoffButton;
 let replaceButton;
 let multifunctionalButtonFunction = ButtonFunction.NONE;
 
@@ -193,6 +194,9 @@ function init() {
     replaceButton = document.getElementById("replaceButton");
     replaceButton.addEventListener('click', handleReplaceButtonClick);
     hideReplaceButton();
+
+    showoffButton = document.getElementById("showoff-button");
+    showoffButton.addEventListener('click', handleShowOffButtonClick);
     
     helpButton = document.getElementById("help-button");
     helpButton.addEventListener('click', handleHelpButtonClick);
@@ -601,6 +605,25 @@ function handleRecordButtonClick() {
         stats.downloadFPSData();
     }, 60000);
 }
+
+function showShowoffButton() {
+    showoffButton.style.right = '10px';
+}
+
+function hideShowoffButton() {
+    showoffButton.style.right = '-60px';
+}
+
+function handleShowOffButtonClick() {
+    // hide all buttons
+    buttonWrapper.classList.remove('visible');
+    setTimeout(() => {
+        buttonWrapper.classList.add('visible');
+    }, 20000)
+    
+    hideBlendSlider();
+}
+
 function showHelpButton() {
     helpButton.style.right = '10px';
 }
@@ -715,6 +738,7 @@ function handleMultifunctionalButtonClick(event) {
 
         showBlendSlider();
         
+        showShowoffButton();
         hideHelpButton();
 
         setTimeout(() => {
