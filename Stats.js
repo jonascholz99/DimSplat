@@ -20,6 +20,11 @@ var Stats = function () {
         return panel;
     }
 
+    function hidePanel() {
+        for (var i = 0; i < container.children.length; i++) {
+            container.children[i].style.display = 'none';
+        }
+    }
     function showPanel(id) {
         for (var i = 0; i < container.children.length; i++) {
             container.children[i].style.display = i === id ? 'block' : 'none';
@@ -51,6 +56,7 @@ var Stats = function () {
         dom: container,
         addPanel: addPanel,
         showPanel: showPanel,
+        hidePanel: hidePanel,
 
         begin: function () {
             beginTime = (performance || Date).now();

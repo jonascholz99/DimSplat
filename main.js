@@ -615,11 +615,24 @@ function hideShowoffButton() {
 }
 
 function handleShowOffButtonClick() {
-    // hide all buttons
+    // hide UI elements
     buttonWrapper.classList.remove('visible');
+    hideShowoffButton();
+    hideRecordButton();
+    stats.hidePanel();
+    
     setTimeout(() => {
+        stats.showPanel(0);
+        showShowoffButton();
+        showRecordButton();
         buttonWrapper.classList.add('visible');
-    }, 20000)
+
+        canvas.style.display = 'block';
+    }, 30000)
+
+    setTimeout(() => {
+        canvas.style.display = 'none';
+    }, 10000)
     
     hideBlendSlider();
 }
