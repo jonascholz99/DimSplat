@@ -271,7 +271,7 @@ body {
 
 #record-button {
     position: fixed;
-    top: 60px;
+    top: 80px;
     right: -60px; /* Start außerhalb des Bildschirms */
     width: 50px;
     height: 50px;
@@ -356,7 +356,7 @@ span {
 
 .slider-container {
     position: fixed;
-    top: 60px; 
+    top: 150px; 
     right: -50px; 
     width: 40px; 
     height: calc(100% - 460px); 
