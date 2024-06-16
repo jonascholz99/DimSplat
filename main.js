@@ -642,7 +642,7 @@ function UpdateMultifunctionalButtonState() {
         multifunctionalButton.textContent = "Enter AR";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.SCENE) {
-        multifunctionalButton.textContent = "Szene Platzieren";
+        multifunctionalButton.textContent = "Place Scene";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.PLACEMENT) {
         multifunctionalButton.textContent = "Next";
@@ -651,16 +651,16 @@ function UpdateMultifunctionalButtonState() {
         multifunctionalButton.textContent = "Mask Object";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.MASK2) {
-        multifunctionalButton.textContent = "Erneut Markieren";
+        multifunctionalButton.textContent = "Mask again";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.TRANSFORM) {
-        multifunctionalButton.textContent = "Bestätigen";
+        multifunctionalButton.textContent = "Confirm";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.DIMINISH) {
         multifunctionalButton.textContent = "Diminish";
         buttonWrapper.classList.add('visible');
     } else if(multifunctionalButtonFunction === ButtonFunction.REMASK) {
-        multifunctionalButton.textContent = "Neu Maskieren";
+        multifunctionalButton.textContent = "Re-Mask";
         buttonWrapper.classList.add('visible');
     } else {
         buttonWrapper.classList.remove('visible');
@@ -690,6 +690,10 @@ function handleMultifunctionalButtonClick(event) {
         drState = DRState.CONTROL;
     } else if(multifunctionalButtonFunction === ButtonFunction.PLACEMENT) {
         onSceneConfirmed();
+
+        HideControlPanel();
+        splat_object.applyPosition();
+        splat_object.applyRotation();
         
         hideReplaceButton();
         drState = DRState.PLACED;
