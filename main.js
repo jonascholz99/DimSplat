@@ -550,10 +550,8 @@ function updateScene() {
 
     if(changeFirstTime) {
         // changeFirstTime = false;
-        splat_object.position = splatPosition;
-        splat_object.applyPosition();
-        splat_object.rotation = splatRotation;
-        splat_object.applyRotation();
+        splat_camera.position = splatPosition;
+        splat_camera.rotation = splatRotation;
     }
 }
 
