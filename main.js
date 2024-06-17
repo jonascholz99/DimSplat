@@ -536,7 +536,6 @@ function updateValue(id, value) {
 }
 
 function updateScene() {
-    splat_placed = false;
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
     const zPosition = parseFloat(zPositionSlider.value);
@@ -545,11 +544,11 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
 
-    splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
-    // splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
+    // splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
+    splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
     
-    splat_object.position = splatPosition;
-    // splat_object.rotation = splatRotation;
+    // splat_object.position = splatPosition;
+    splat_object.rotation = splatRotation;
 }
 
 function updateCube() {
