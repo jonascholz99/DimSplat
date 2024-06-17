@@ -525,31 +525,16 @@ function UpdateControlPanelAppearance() {
     }
 }
 
-let change = true;
-
 function updateValue(id, value) {
     document.getElementById(id).textContent = value;
 
     if(currentControlPanelFunction === ControlPanelFunction.BOX_TRANSFORM) {
         updateCube();
-    } else if(currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {
-        if(change) {
-            change = false;
-            
-            splat_placed = false;
-            should_render_XR_loop = false;
-            
-            updateScene();
-            setTimeout(() => {
-                change = true;
-                splat_placed = true;
-                should_render_XR_loop = true;
-            }, 500)
-        }
+    } else if(currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {         
+        updateScene();         
     }
 }
 
-let changeFirstTime = true;
 function updateScene() {
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
@@ -559,14 +544,15 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
 
-    splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
-    splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
+    let prom = new Promise((resolve) => {
+        splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
+        splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
+        resolve();
+    })
 
-    if(changeFirstTime) {
-        // changeFirstTime = false;
-        splat_object.position = splatPosition;
-        splat_object.rotation = splatRotation;
-    }
+    prom.then(() => {
+        console.log("MOIN")
+    });
 }
 
 function updateCube() {
