@@ -535,9 +535,6 @@ function updateValue(id, value) {
     }
 }
 
-let previousXPosition = 0;
-let previousYPosition = 0;
-let previousZPosition = 0;
 function updateScene() {
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
@@ -547,15 +544,10 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
 
-    const deltaXPosition = xPosition - previousXPosition;
-    const deltaYPosition = yPosition - previousYPosition;
-    const deltaZPosition = zPosition - previousZPosition;
-
-    
-    splatPosition = new THREE.Vector3(deltaXPosition, deltaYPosition, deltaZPosition);
+    splatPosition = new THREE.Vector3(xPosition, yPosition, zPosition);
     // splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
 
-    three_camera_setup_position.add(splatPosition);
+    three_camera_setup_position = splatPosition;
     // splat_object.rotation = splatRotation;
 }
 
