@@ -525,20 +525,30 @@ function UpdateControlPanelAppearance() {
     }
 }
 
+let change = true;
+
 function updateValue(id, value) {
     document.getElementById(id).textContent = value;
 
     if(currentControlPanelFunction === ControlPanelFunction.BOX_TRANSFORM) {
         updateCube();
     } else if(currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {
-        updateScene();
+        splat_placed = false;
+        should_render_XR_loop = false;
+
+        if(change) {
+            change = false;
+            updateScene();
+            setTimeout(() => {
+                splat_placed = true;
+                should_render_XR_loop = true;
+            }, 500)
+        }
     }
 }
 
 let changeFirstTime = true;
 function updateScene() {
-    splat_placed = false;
-    should_render_XR_loop = false;
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
     const zPosition = parseFloat(zPositionSlider.value);
@@ -555,9 +565,6 @@ function updateScene() {
         splat_object.position = splatPosition;
         splat_object.rotation = splatRotation;
     }
-
-    splat_placed = true;
-    should_render_XR_loop = true;
 }
 
 function updateCube() {
