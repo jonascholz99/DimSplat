@@ -530,7 +530,28 @@ function updateValue(id, value) {
     if(currentControlPanelFunction === ControlPanelFunction.BOX_TRANSFORM) {
         updateCube();
     } else if(currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {
-        updateScene();
+        throttle(updateScene, 200);
+    }
+}
+
+function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+    return function() {
+        const context = this;
+        const args = arguments;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function() {
+                if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
     }
 }
 
@@ -1139,7 +1160,7 @@ function onXRFrame(t, frame) {
     
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
-        let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_rotation.clone().invert());
+        // let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_rotation.clone().invert());
         
         splat_camera._position.x = scale*movement_scale*deltaPosition.x;
         splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
