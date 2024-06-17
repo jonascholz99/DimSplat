@@ -524,34 +524,14 @@ function UpdateControlPanelAppearance() {
         zRotScaleSlider.value = 0;
     }
 }
+
 function updateValue(id, value) {
     document.getElementById(id).textContent = value;
 
     if(currentControlPanelFunction === ControlPanelFunction.BOX_TRANSFORM) {
         updateCube();
     } else if(currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {
-        throttle(updateScene, 200);
-    }
-}
-
-function throttle(func, limit) {
-    let lastFunc;
-    let lastRan;
-    return function() {
-        const context = this;
-        const args = arguments;
-        if (!lastRan) {
-            func.apply(context, args);
-            lastRan = Date.now();
-        } else {
-            clearTimeout(lastFunc);
-            lastFunc = setTimeout(function() {
-                if ((Date.now() - lastRan) >= limit) {
-                    func.apply(context, args);
-                    lastRan = Date.now();
-                }
-            }, limit - (Date.now() - lastRan));
-        }
+        updateScene();
     }
 }
 
@@ -564,7 +544,7 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
     
-    splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
+    splatPosition.set(xPosition, yPosition, zPosition);
     splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
 
     splat_object.position = splatPosition;
