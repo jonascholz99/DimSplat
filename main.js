@@ -543,6 +543,7 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
 
+    console.log("Set Position and Rotation");
     splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
     splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
 
@@ -728,8 +729,6 @@ function handleMultifunctionalButtonClick(event) {
         onSceneConfirmed();
 
         HideControlPanel();
-        splat_object.applyPosition();
-        splat_object.applyRotation();
         
         hideReplaceButton();
         drState = DRState.PLACED;
@@ -1043,6 +1042,8 @@ function onSceneConfirmed() {
         singleSplat.Rendered = 0;
     })
     splat_object.applyRendering();
+    splat_object.applyPosition();
+    splat_object.applyRotation();
 }
 
 /*
