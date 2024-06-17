@@ -536,6 +536,7 @@ function updateValue(id, value) {
 }
 
 function updateScene() {
+    splat_placed = false;
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
     const zPosition = parseFloat(zPositionSlider.value);
