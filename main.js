@@ -350,6 +350,8 @@ function handleExplanationButtonClicked(event) {
 
             showHelpButton();
 
+            addValue = three_camera_setup_position.clone();
+            
             splatPosition = splat_object.position;
             splatRotation = splat_object.rotation;
             currentControlPanelFunction = ControlPanelFunction.SCENE_TRANSFORM;
@@ -535,6 +537,7 @@ function updateValue(id, value) {
     }
 }
 
+let addValue;
 function updateScene() {
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
@@ -544,7 +547,7 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
 
-    splatPosition = new THREE.Vector3(xPosition, yPosition, zPosition);
+    splatPosition = new THREE.Vector3(xPosition, yPosition, zPosition).add(addValue);
     // splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
 
     three_camera_setup_position = splatPosition;
