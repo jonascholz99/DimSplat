@@ -536,6 +536,7 @@ function updateValue(id, value) {
 }
 
 function updateScene() {
+    splat_placed = false;
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
     const zPosition = parseFloat(zPositionSlider.value);
@@ -1151,9 +1152,10 @@ function onXRFrame(t, frame) {
         splat_camera._rotation.y = -three_camera.quaternion.y;
         splat_camera._rotation.z = -three_camera.quaternion.z;
         splat_camera._rotation.w = three_camera.quaternion.w;
-    }
 
-    three_renderer.render( three_scene, three_camera );
+        three_renderer.render( three_scene, three_camera );
+    }
+    
     splat_renderer.render( splat_scene, splat_camera );
 
     if(first_frame) {
