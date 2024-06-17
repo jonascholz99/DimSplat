@@ -1042,8 +1042,8 @@ function onSceneConfirmed() {
         singleSplat.Rendered = 0;
     })
     splat_object.applyRendering();
-    splat_object.applyPosition();
-    splat_object.applyRotation();
+    // splat_object.applyPosition();
+    // splat_object.applyRotation();
 }
 
 /*
