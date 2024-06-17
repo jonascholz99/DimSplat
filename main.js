@@ -537,6 +537,7 @@ function updateValue(id, value) {
 
 let changeFirstTime = true;
 function updateScene() {
+    splat_placed = false;
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
     const zPosition = parseFloat(zPositionSlider.value);
@@ -550,8 +551,8 @@ function updateScene() {
 
     if(changeFirstTime) {
         // changeFirstTime = false;
-        splat_camera.position = splatPosition;
-        splat_camera.rotation = splatRotation;
+        splat_object.position = splatPosition;
+        splat_object.rotation = splatRotation;
     }
 }
 
