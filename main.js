@@ -543,8 +543,8 @@ function updateScene() {
     const xRotation = parseFloat(xRotScaleSlider.value);
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
-    
-    splatPosition.set(xPosition, yPosition, zPosition);
+
+    splatPosition = splatPosition.set(xPosition, yPosition, zPosition);
     splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
 
     splat_object.position = splatPosition;
