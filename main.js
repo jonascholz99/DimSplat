@@ -544,15 +544,11 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
 
-    let prom = new Promise((resolve) => {
-        splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
-        splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
-        resolve();
-    })
-
-    prom.then(() => {
-        console.log("MOIN")
-    });
+    splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
+    // splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
+    
+    splat_object.position = splatPosition;
+    // splat_object.rotation = splatRotation;
 }
 
 function updateCube() {
