@@ -549,9 +549,11 @@ function updateScene() {
     splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
 
     if(changeFirstTime) {
-        changeFirstTime = false;
+        // changeFirstTime = false;
         splat_object.position = splatPosition;
+        splat_object.applyPosition();
         splat_object.rotation = splatRotation;
+        splat_object.applyRotation();
     }
 }
 
