@@ -555,6 +555,9 @@ function updateScene() {
         splat_object.position = splatPosition;
         splat_object.rotation = splatRotation;
     }
+
+    splat_placed = true;
+    should_render_XR_loop = true;
 }
 
 function updateCube() {
