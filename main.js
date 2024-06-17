@@ -545,9 +545,7 @@ function updateScene() {
 
     console.log("Set Position and Rotation");
     splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
-    splat_object.applyPosition();
     splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
-    splat_object.applyRotation();
 
     splat_object.position = splatPosition;
     splat_object.rotation = splatRotation;
@@ -1044,6 +1042,8 @@ function onSceneConfirmed() {
         singleSplat.Rendered = 0;
     })
     splat_object.applyRendering();
+    splat_object.applyPosition();
+    splat_object.applyRotation();
 }
 
 /*
