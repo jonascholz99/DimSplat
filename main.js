@@ -323,12 +323,6 @@ function handleExplanationButtonClicked(event) {
     if(drState === DRState.INTRO) {
         if(currentExplanationIndex === 0) {
             hideExplanationWindow();
-
-            splatPosition = splat_object.position;
-            splatRotation = splat_object.rotation;
-            currentControlPanelFunction = ControlPanelFunction.SCENE_TRANSFORM;
-            UpdateControlPanelAppearance();
-            ShowControlPanel();
             
             multifunctionalButtonFunction = ButtonFunction.AR;
             UpdateMultifunctionalButtonState();
@@ -355,6 +349,12 @@ function handleExplanationButtonClicked(event) {
             UpdateMultifunctionalButtonState();
 
             showHelpButton();
+
+            splatPosition = splat_object.position;
+            splatRotation = splat_object.rotation;
+            currentControlPanelFunction = ControlPanelFunction.SCENE_TRANSFORM;
+            UpdateControlPanelAppearance();
+            ShowControlPanel();
             
             return;
         }
@@ -544,11 +544,11 @@ function updateScene() {
     const yRotation = parseFloat(yRotScaleSlider.value);
     const zRotation = parseFloat(zRotScaleSlider.value);
 
-    // splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
-    splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
-    
-    // splat_object.position = splatPosition;
-    splat_object.rotation = splatRotation;
+    splatPosition = new SPLAT.Vector3(xPosition, yPosition, zPosition);
+    // splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
+
+    three_camera_setup_position.add(splatPosition);
+    // splat_object.rotation = splatRotation;
 }
 
 function updateCube() {
