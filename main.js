@@ -533,13 +533,15 @@ function updateValue(id, value) {
     if(currentControlPanelFunction === ControlPanelFunction.BOX_TRANSFORM) {
         updateCube();
     } else if(currentControlPanelFunction === ControlPanelFunction.SCENE_TRANSFORM) {
-        splat_placed = false;
-        should_render_XR_loop = false;
-
         if(change) {
             change = false;
+            
+            splat_placed = false;
+            should_render_XR_loop = false;
+            
             updateScene();
             setTimeout(() => {
+                change = true;
                 splat_placed = true;
                 should_render_XR_loop = true;
             }, 500)
