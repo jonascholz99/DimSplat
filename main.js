@@ -631,6 +631,8 @@ function handleShowOffButtonClick() {
     hideShowoffButton();
     hideRecordButton();
     stats.hidePanel();
+
+    three_renderer.setClearColor(0x000000, 1);
     
     setTimeout(() => {
         stats.showPanel(0);
