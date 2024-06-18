@@ -350,6 +350,7 @@ function handleExplanationButtonClicked(event) {
             showHelpButton();
 
             addValue = three_camera_setup_position.clone();
+            addRotation = three_camera_setup_rotation.clone();
             
             splatPosition = splat_object.position;
             splatRotation = splat_object.rotation;
@@ -536,7 +537,7 @@ function updateValue(id, value) {
     }
 }
 
-let addValue;
+let addValue, addRotation;
 function updateScene() {
     const xPosition = parseFloat(xPositionSlider.value);
     const yPosition = parseFloat(yPositionSlider.value);
@@ -547,10 +548,17 @@ function updateScene() {
     const zRotation = parseFloat(zRotScaleSlider.value);
 
     splatPosition = new THREE.Vector3(xPosition, yPosition, zPosition).add(addValue);
-    // splatRotation = SPLAT.Quaternion.FromEuler(new SPLAT.Vector3(xRotation, yRotation, zRotation));
-
     three_camera_setup_position = splatPosition;
-    // splat_object.rotation = splatRotation;
+
+    let additionalEuler = new THREE.Euler(
+        THREE.MathUtils.degToRad(xRotation),
+        THREE.MathUtils.degToRad(yRotation),
+        THREE.MathUtils.degToRad(zRotation),
+        'XYZ'
+    );
+
+    let additionalQuaternion = new THREE.Quaternion().setFromEuler(additionalEuler);
+    three_camera_setup_rotation = addRotation.multiply(additionalQuaternion);
 }
 
 function updateCube() {
