@@ -643,8 +643,6 @@ function handleShowOffButtonClick() {
         showRecordButton();
         buttonWrapper.classList.add('visible');
         three_scene.remove(plane);
-        
-        canvas.style.display = 'block';
     }, 30000)
 
     setTimeout(() => {
@@ -652,6 +650,7 @@ function handleShowOffButtonClick() {
     }, 10000);
 
     setTimeout(() => {
+        canvas.style.display = 'block';
         three_scene.add(plane);
     }, 20000);
     
