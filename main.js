@@ -1,7 +1,6 @@
 import * as SPLAT from '@jonascholz/gaussian-splatting'
 import * as THREE from 'three'
 import Stats from "./Stats.js"
-import {sin} from "three/nodes";
 
 /*
  * =================================================================================================
@@ -1143,6 +1142,8 @@ function onXRFrame(t, frame) {
     
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
+        let deltaRotation = new THREE.Quaternion();
+        deltaRotation.copy(three_camera.rotation).multiply(three_camera_setup_rotation.conjugate());
         // let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_rotation.clone().invert());
         
         splat_camera._position.x = scale*movement_scale*deltaPosition.x;
@@ -1150,10 +1151,10 @@ function onXRFrame(t, frame) {
         splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
         
         // rotation needs to be changed
-        splat_camera._rotation.x = three_camera.quaternion.x;
-        splat_camera._rotation.y = -three_camera.quaternion.y;
-        splat_camera._rotation.z = -three_camera.quaternion.z;
-        splat_camera._rotation.w = three_camera.quaternion.w;
+        splat_camera._rotation.x = deltaRotation.x;
+        splat_camera._rotation.y = -deltaRotation.y;
+        splat_camera._rotation.z = -deltaRotation.z;
+        splat_camera._rotation.w = deltaRotation.w;
     }
 
     three_renderer.render( three_scene, three_camera );
