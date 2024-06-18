@@ -550,15 +550,15 @@ function updateScene() {
     splatPosition = new THREE.Vector3(xPosition, yPosition, zPosition).add(addValue);
     three_camera_setup_position = splatPosition;
 
-    let additionalEuler = new THREE.Euler(
-        THREE.MathUtils.degToRad(xRotation),
-        THREE.MathUtils.degToRad(yRotation),
-        THREE.MathUtils.degToRad(zRotation),
-        'XYZ'
-    );
-
-    let additionalQuaternion = new THREE.Quaternion().setFromEuler(additionalEuler);
-    three_camera_setup_rotation = addRotation.multiply(additionalQuaternion);
+    // let additionalEuler = new THREE.Euler(
+    //     THREE.MathUtils.degToRad(xRotation),
+    //     THREE.MathUtils.degToRad(yRotation),
+    //     THREE.MathUtils.degToRad(zRotation),
+    //     'XYZ'
+    // );
+    //
+    // let additionalQuaternion = new THREE.Quaternion().setFromEuler(additionalEuler);
+    // three_camera_setup_rotation = addRotation.multiply(additionalQuaternion);
 }
 
 function updateCube() {
