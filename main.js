@@ -607,6 +607,7 @@ function hideRecordButton() {
 
 function handleRecordButtonClick() {
     // Start collecting FPS data
+    updateBoxFrustumCalls = 0;
     stats.startCollectingFPS();
     hideRecordButton();
 
@@ -1161,20 +1162,20 @@ function onXRFrame(t, frame) {
     
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
-        let inverseOriginalRotation = three_camera_setup_rotation.clone().invert();
+        // let inverseOriginalRotation = three_camera_setup_rotation.clone().invert();
 
         // Berechnen des Delta-Quaternions durch Multiplikation
-        let deltaRotation = three_camera.quaternion.clone().multiply(inverseOriginalRotation);
+        // let deltaRotation = three_camera.quaternion.clone().multiply(inverseOriginalRotation);
         
         splat_camera._position.x = scale*movement_scale*deltaPosition.x;
         splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
         splat_camera._position.z = -scale*movement_scale*deltaPosition.z-initial_z;
         
         // rotation needs to be changed
-        splat_camera._rotation.x = deltaRotation.x;
-        splat_camera._rotation.y = -deltaRotation.y;
-        splat_camera._rotation.z = -deltaRotation.z;
-        splat_camera._rotation.w = deltaRotation.w;
+        splat_camera._rotation.x = three_camera.quaternion.x;
+        splat_camera._rotation.y = -three_camera.quaternion.y;
+        splat_camera._rotation.z = -three_camera.quaternion.z;
+        splat_camera._rotation.w = three_camera.quaternion.w;
     }
 
     three_renderer.render( three_scene, three_camera );
