@@ -1142,9 +1142,10 @@ function onXRFrame(t, frame) {
     
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
-        let deltaRotation = new THREE.Quaternion();
-        deltaRotation.copy(three_camera.rotation).multiply(three_camera_setup_rotation.conjugate());
-        // let deltaRotation = three_camera.quaternion.clone().multiply(three_camera_setup_rotation.clone().invert());
+        let inverseOriginalRotation = three_camera_setup_rotation.clone().invert();
+
+        // Berechnen des Delta-Quaternions durch Multiplikation
+        let deltaRotation = three_camera.quaternion.clone().multiply(inverseOriginalRotation);
         
         splat_camera._position.x = scale*movement_scale*deltaPosition.x;
         splat_camera._position.y = -scale*movement_scale*deltaPosition.y-initial_y;
