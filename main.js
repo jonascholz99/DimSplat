@@ -632,7 +632,20 @@ function handleShowOffButtonClick() {
     hideRecordButton();
     stats.hidePanel();
 
-    three_renderer.setClearColor(0x000000, 1);
+    // Erstellen einer schwarzen Plane
+    var planeGeometry = new THREE.PlaneGeometry(100, 100); // Größe anpassen
+    var planeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.position.set(0, 0, -1); // Positionieren vor der Kamera
+    three_scene.add(plane);
+
+    // Funktion zum Entfernen der Plane
+    function removePlane() {
+        three_scene.remove(plane);
+    }
+    
+    // Plane für 10 Sekunden anzeigen und dann entfernen
+    setTimeout(removePlane, 10000);
     
     setTimeout(() => {
         stats.showPanel(0);
