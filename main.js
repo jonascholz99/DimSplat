@@ -633,10 +633,10 @@ function handleShowOffButtonClick() {
     hideRecordButton();
     stats.hidePanel();
     
-    var planeGeometry = new THREE.PlaneGeometry(100, 100); // Größe anpassen
+    var planeGeometry = new THREE.PlaneGeometry(1000, 1000); // Größe anpassen
     var planeMaterial = new THREE.MeshBasicMaterial({ color: 0xff00cc });
     var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.position.set(-1, 0, 0); // Positionieren vor der Kamera
+    plane.position.set(0, 0, -1); // Positionieren vor der Kamera
     
     setTimeout(() => {
         stats.showPanel(0);
