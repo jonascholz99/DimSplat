@@ -112,16 +112,33 @@ var Stats = function () {
                 fpsHistory: fpsHistory,
                 frameTimes: frameTimes,
                 frameChanges: frameChanges,
-                splatCounts: splatCounts
+                splatCounts: splatCounts,
+                functionCallsCounts: functionCallsCounts // Stellen Sie sicher, dass diese Daten richtig gesammelt werden
             };
+
+            // Erstellen eines Blob aus den gesammelten Daten
             var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+
+            // Erstellen einer URL aus dem Blob
             var url = URL.createObjectURL(blob);
+
+            // Erstellen eines temporären Download-Links
             var a = document.createElement('a');
+            document.body.appendChild(a); // Hinzufügen des Links zum Body, notwendig für einige Browser
+            a.style = 'display: none'; // Den Link verstecken
             a.href = url;
-            a.download = 'fps_data.json';
+            a.download = 'fps_data.json'; // Der Name der heruntergeladenen Datei
+
+            // Start des Downloads
             a.click();
-            URL.revokeObjectURL(url);
+
+            // Aufräumen (Entfernen der URL und des Links)
+            window.setTimeout(function() {
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }, 0);
         },
+
 
         getAverageFPS: function (duration) {
             // Calculate average FPS over the given duration (in milliseconds)

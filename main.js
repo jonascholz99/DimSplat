@@ -985,6 +985,7 @@ function updateBoxFrustum() {
 
     cameraPosition = splat_camera.position.clone();
     cameraRotation = splat_camera.rotation.clone();
+    updateBoxFrustumCalls++;
     
     screenPoints = boxObject.getCorners().map(corner => splat_camera.worldToScreenPoint(corner));
     
@@ -1147,6 +1148,7 @@ function getXRSessionInit(mode, options) {
 
 let frameCounter = 0;
 const updateInterval = 15;
+let updateBoxFrustumCalls = 0;
 
 function onXRFrame(t, frame) {
     if(!should_render_XR_loop) return;
@@ -1185,7 +1187,7 @@ function onXRFrame(t, frame) {
     
     frameCounter++;
 
-    stats.end(0, splat_object.numberOfRenderedSplats);
+    stats.end(updateBoxFrustumCalls, splat_object.numberOfRenderedSplats);
     session.requestAnimationFrame(onXRFrame);
 }
 
