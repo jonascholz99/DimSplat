@@ -549,16 +549,6 @@ function updateScene() {
 
     splatPosition = new THREE.Vector3(xPosition, yPosition, zPosition).add(addValue);
     three_camera_setup_position = splatPosition;
-
-    // let additionalEuler = new THREE.Euler(
-    //     THREE.MathUtils.degToRad(xRotation),
-    //     THREE.MathUtils.degToRad(yRotation),
-    //     THREE.MathUtils.degToRad(zRotation),
-    //     'XYZ'
-    // );
-    //
-    // let additionalQuaternion = new THREE.Quaternion().setFromEuler(additionalEuler);
-    // three_camera_setup_rotation = addRotation.multiply(additionalQuaternion);
 }
 
 function updateCube() {
@@ -633,10 +623,10 @@ function handleShowOffButtonClick() {
     hideRecordButton();
     stats.hidePanel();
     
-    var planeGeometry = new THREE.PlaneGeometry(300, 300); // Größe anpassen
+    var planeGeometry = new THREE.PlaneGeometry(300, 300); 
     var planeMaterial = new THREE.MeshBasicMaterial({ color: 0xff00cc });
     var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.position.set(0, 0, -1); // Positionieren vor der Kamera
+    plane.position.set(0, 0, -1); 
     
     setTimeout(() => {
         stats.showPanel(0);
@@ -914,8 +904,7 @@ function handleMouseDown(event) {
                 console.log("Second Frustum Created");
 
                 if (frustum1 && frustum2) {
-                    // frustum1.drawFrustum(splat_renderer);
-                    // frustum2.drawFrustum(splat_renderer);
+
                     const intersectionPoints = frustum1.intersectFrustum(frustum2);
                     drawIntersectionVolume(intersectionPoints);
                 }
@@ -1163,8 +1152,7 @@ function onXRFrame(t, frame) {
     if(splat_placed) {
         let deltaPosition = three_camera.position.clone().sub(three_camera_setup_position);
         // let inverseOriginalRotation = three_camera_setup_rotation.clone().invert();
-
-        // Berechnen des Delta-Quaternions durch Multiplikation
+        
         // let deltaRotation = three_camera.quaternion.clone().multiply(inverseOriginalRotation);
         
         splat_camera._position.x = scale*movement_scale*deltaPosition.x;
